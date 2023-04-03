@@ -38,5 +38,6 @@ jobs:
           server: ftp.ecstaticdance.nl
           username: edsefrijn@ecstaticdance.nl
           password: ${{ secrets.ftp_password }}
+          local-dir: ./out/
           server-dir: /public_html/staging/
     
