@@ -1,0 +1,42 @@
+name: Build and deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    
+jobs:
+  build:
+    name: Build ⛏️
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build dependencies
+        run: yarn build
+      - name: Archive production artifact
+        uses: actions/upload-artifact@main
+        with:
+          name: out
+          path: out
+  deploy:
+    name: Deploy 🚀
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+      - name: Download artifact
+        uses: actions/download-artifact@main
+        with:
+          name: out
+          path: out
+      - name: Sync files to hosting
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ftp.ecstaticdance.nl
+          username: edsefrijn@ecstaticdance.nl
+          password: ${{ secrets.ftp_password }}
+          server-dir: /public_html/staging/
+    
