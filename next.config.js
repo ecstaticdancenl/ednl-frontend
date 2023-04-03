@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   output: "export",
-  distDir: "dist",
+  basePath: "/staging",
 };
 
 module.exports = nextConfig;
