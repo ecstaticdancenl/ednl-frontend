@@ -2,3 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+::selection {
+    @apply bg-amber-500 text-slate-100;
+}
+body, html{
+    @apply text-lg;
+}
+nav a{
+    @apply text-base;
+}
+
+.underline_animated{
+    @apply relative;
+}
+
+.underline_animated:after{
+    @apply block w-0 bg-current absolute top-[90%] right-0 left-auto transition-all duration-300;
+    height:1px;
+    content: "";
+}
+.underline_animated:hover, .underline_animated.underline_animated_active{
+    @apply after:left-0 after:right-auto after:w-full;
+}
+
+header, section, main{
+    @apply relative z-10;
+}
+
+p{
+    /*@apply leading-snug;*/
+}
+h2{
+    @apply text-2xl md:text-3xl lg:text-4xl md:leading-snug leading-snug;
+}

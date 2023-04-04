@@ -8,7 +8,14 @@ module.exports = {
     fontFamily: {
       sans: ["var(--outfit-font)", "sans-serif"],
     },
-    extend: {},
+    extend: {
+      letterSpacing: {
+        "very-wide": "0.2em",
+      },
+      colors: {
+        "blue-gray": "#98A7CC",
+      },
+    },
   },
   plugins: [],
 };
