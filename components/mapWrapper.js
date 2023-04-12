@@ -30,6 +30,7 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
         const feature = new Feature(new Point(coordinate));
         feature.set("organisation", address.organisation);
         feature.set("naam", address.naam);
+        feature.set("hover", false);
         if (
           address.organisation.toLowerCase().includes(filter.toLowerCase()) ||
           address.naam.toLowerCase().includes(filter.toLowerCase())
@@ -56,6 +57,32 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
         minZoom: 7.2,
         extent: [...extentStart, ...extentEnd],
       }),
+    });
+
+    initialMap.on("pointermove", function (event) {
+      const feature = initialMap.forEachFeatureAtPixel(
+        event.pixel,
+        function (feature) {
+          return feature;
+        }
+      );
+      //
+      if (feature?.get("features").length === 1) {
+        feature.get("features")[0].set("hover", true);
+      } else {
+        source.getFeatures().forEach(function (feature) {
+          console.log(feature);
+          feature.set("hover", false);
+          // feature.get("features")?.[0].set("naam", "NEE");
+        });
+      }
+      //   // if (feature === marker) {
+      //   // show the text if the mouse is over the marker
+      //   // source.getFeatureByUid().getStyle().getText().setText('Some text');
+      //   // } else {
+      //   // hide the text if the mouse is not over the marker
+      //   // marker.getStyle().getText().setText('');
+      //   // }
     });
 
     // save map and vector layer references to state

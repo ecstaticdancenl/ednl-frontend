@@ -10,6 +10,7 @@ import { MapWrapper } from "@/components/mapWrapper";
 import { Label } from "@/components/label";
 import { Address } from "@/types/address";
 import { useState } from "react";
+import Link from "next/link";
 
 export async function getStaticProps() {
   //    Get data from WordPress
@@ -148,17 +149,26 @@ export default function Home({ organisations, addresses }: AppProps) {
                   }
                 }
                 return (
-                  <div key={index}>
-                    <h4>{org.title}</h4>
+                  <div className={"pb-4"} key={index}>
+                    <Link href={"/"} className={"group flex justify-between"}>
+                      <h4 className={"group-hover:underline"}>{org.title}</h4>
+                      <span
+                        className={
+                          "opacity-10 group-hover:opacity-50 transition-opacity"
+                        }
+                      >
+                        →
+                      </span>
+                    </Link>
                     {!org.acfOrganisatieGegevens.locaties && (
-                      <p className={"text-sm p-3"}>
+                      <p className={"text-sm p-2"}>
                         Op dit moment geen locatie
                       </p>
                     )}
                     {org.acfOrganisatieGegevens.locaties?.map((loc: any) => {
                       return (
                         <div
-                          className={"text-sm p-3 flex gap-2 items-start"}
+                          className={"text-sm p-1 flex gap-2 items-start"}
                           key={loc.naam}
                         >
                           <img

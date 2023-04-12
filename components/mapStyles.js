@@ -9,8 +9,28 @@ export const clusterStyle = (feature) => {
   const size = feature.get("features").length;
   const organisation = feature.get("features")[0].get("organisation");
   const naam = feature.get("features")[0].get("naam");
+  const hover = feature.get("features")[0].get("hover") === true;
   // Single organisation
-  if (size == 1) {
+  if (!hover && size === 1) {
+    return [
+      new Style({
+        image: icon,
+        // text: new Text({
+        //   text: organisation,
+        //   fill: new Fill({
+        //     color: "#fff",
+        //   }),
+        //   stroke: new Stroke({
+        //     color: "#00000099",
+        //     width: 5,
+        //   }),
+        //   offsetY: 15,
+        //   font: "normal 13px __Outfit_adb80a",
+        // }),
+      }),
+    ];
+  }
+  if (size === 1) {
     return [
       new Style({
         image: icon,
