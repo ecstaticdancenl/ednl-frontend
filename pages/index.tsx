@@ -8,56 +8,68 @@ import { HomeIntroductie } from "@/components/homeIntroductie";
 import { HomeHeader } from "@/components/homeHeader";
 import { MapWrapper } from "@/components/mapWrapper";
 import { Label } from "@/components/label";
+import { Address } from "@/types/address";
+import { useState } from "react";
 
 export async function getStaticProps() {
+  //    Get data from WordPress
   const { data } = await client.query({
     query: gql`
       query {
-        organisations {
+        organisations(where: { orderby: { field: TITLE, order: ASC } }) {
           nodes {
             id
             title
             slug
             acfOrganisatieGegevens {
               email
-              fieldGroupName
-              naam
-              adres
-              telefoon
+              locaties {
+                naam
+                adres
+              }
             }
           }
         }
       }
     `,
   });
-  const organisationsWithAddress = data.organisations.nodes.filter(
-    (org: Organisation) => org.acfOrganisatieGegevens.adres
-  );
-  const addresses = organisationsWithAddress.map((org: Organisation) => [
-    org.id,
-    org.acfOrganisatieGegevens.adres
-      .replaceAll(/\n|\r|/g, "")
-      .replaceAll(/<br \/>/g, "+")
-      .replaceAll(/ /g, "+"),
-  ]);
-
-  const addressesJSON = await Promise.all(
-    addresses.map(async (address: any) => {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${address[1]}&format=json&addressdetails=1`
-      );
-      const json = await res.json();
-      return [address[0], json[0]];
-    })
-  );
+  //   Get addresses and long lat coordinates from Nominatim
+  const addressesJSON = await getAddresses(data.organisations.nodes);
 
   return {
     props: {
       organisations: data.organisations,
       addresses: Object.fromEntries(addressesJSON),
-      // addresses: addresses,
     },
   };
+}
+
+async function getAddresses(organisations: Organisation[]) {
+  return Promise.all(
+    organisations.map(async (org: Organisation) => {
+      // If there are no locations, return an empty array
+      if (!org.acfOrganisatieGegevens.locaties) return [org.id, []];
+
+      //   Get addresses and long lat coordinates from Nominatim
+      const addresses = await Promise.all(
+        org.acfOrganisatieGegevens.locaties.map(async (loc: any) => {
+          const adres = loc.adres.replaceAll(/\r|\n/g, "+");
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${adres}&format=json&addressdetails=1`
+          );
+          const json = await res.json();
+          const obj: Address = {
+            organisation: org.title,
+            naam: loc.naam,
+            adres: loc.adres,
+            json: json[0],
+          };
+          return obj;
+        })
+      );
+      return [org.id, addresses];
+    })
+  );
 }
 
 type AppProps = {
@@ -70,11 +82,18 @@ type Organisation = {
   id: string;
   title: string;
   acfOrganisatieGegevens: {
-    adres: string;
+    locaties: [
+      {
+        naam: string;
+        adres: string;
+        adresPlain: string;
+      }
+    ];
   };
 };
 
 export default function Home({ organisations, addresses }: AppProps) {
+  const [mapFilter, setMapFilter] = useState<string>("");
   return (
     <>
       <Head>
@@ -101,11 +120,67 @@ export default function Home({ organisations, addresses }: AppProps) {
         >
           <Label>Locaties</Label>
           <h2 className={"-mt-3"}>Waar kan je dansen?</h2>
+          <input
+            className={"bg-white/10 rounded-md p-2 "}
+            type="text"
+            placeholder={"Zoek locatie"}
+            onChange={(e) => setMapFilter(e.target.value)}
+            value={mapFilter}
+          />
           <div className={"mt-3 w-full grid grid-cols-2 gap-8"}>
-            <MapWrapper addresses={addresses} organisations={organisations} />
+            <MapWrapper
+              filter={mapFilter}
+              addresses={addresses}
+              organisations={organisations}
+            />
             <div>
               {organisations.nodes.map((org: Organisation, index) => {
-                return <div key={index}>{org.title}</div>;
+                if (mapFilter !== "") {
+                  if (
+                    !org.title
+                      .toLowerCase()
+                      .includes(mapFilter.toLowerCase()) &&
+                    !org.acfOrganisatieGegevens.locaties?.some((loc: any) =>
+                      loc.naam.toLowerCase().includes(mapFilter.toLowerCase())
+                    )
+                  ) {
+                    return;
+                  }
+                }
+                return (
+                  <div key={index}>
+                    <h4>{org.title}</h4>
+                    {!org.acfOrganisatieGegevens.locaties && (
+                      <p className={"text-sm p-3"}>
+                        Op dit moment geen locatie
+                      </p>
+                    )}
+                    {org.acfOrganisatieGegevens.locaties?.map((loc: any) => {
+                      return (
+                        <div
+                          className={"text-sm p-3 flex gap-2 items-start"}
+                          key={loc.naam}
+                        >
+                          <img
+                            src="marker_light.svg"
+                            className={"opacity-50"}
+                            alt=""
+                          />
+                          <div className={"flex flex-col gap-1"}>
+                            <p>{loc.naam}</p>
+                            <p
+                              className={
+                                "text-xs font-light text-white/60 whitespace-pre-wrap"
+                              }
+                            >
+                              {loc.adres}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
               })}
             </div>
           </div>
