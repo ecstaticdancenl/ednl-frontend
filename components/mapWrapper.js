@@ -39,7 +39,8 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
         feature.set("hover", false);
         if (
           address.organisation.toLowerCase().includes(filter.toLowerCase()) ||
-          address.naam.toLowerCase().includes(filter.toLowerCase())
+          address.naam.toLowerCase().includes(filter.toLowerCase()) ||
+          address.adres.toLowerCase().includes(filter.toLowerCase())
         ) {
           features.push(feature);
         }

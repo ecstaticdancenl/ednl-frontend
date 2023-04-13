@@ -10,7 +10,8 @@ import { MapWrapper } from "@/components/mapWrapper";
 import { Label } from "@/components/label";
 import { Address } from "@/types/address";
 import { useState } from "react";
-import Link from "next/link";
+import { OrgList } from "@/components/orgList";
+import { Organisation } from "@/types/organisation";
 
 export async function getStaticProps() {
   //    Get data from WordPress
@@ -83,20 +84,6 @@ type AppProps = {
   addresses: [];
 };
 
-type Organisation = {
-  id: string;
-  title: string;
-  acfOrganisatieGegevens: {
-    locaties: [
-      {
-        naam: string;
-        adres: string;
-        adresPlain: string;
-      }
-    ];
-  };
-};
-
 export default function Home({ organisations, addresses }: AppProps) {
   const [mapFilter, setMapFilter] = useState<string>("");
   return (
@@ -154,64 +141,7 @@ export default function Home({ organisations, addresses }: AppProps) {
               addresses={addresses}
               organisations={organisations}
             />
-            <div className={"flex flex-col gap-2"}>
-              {organisations.nodes.map((org: Organisation, index) => {
-                if (mapFilter !== "") {
-                  if (
-                    !org.title
-                      .toLowerCase()
-                      .includes(mapFilter.toLowerCase()) &&
-                    !org.acfOrganisatieGegevens.locaties?.some((loc: any) =>
-                      loc.naam.toLowerCase().includes(mapFilter.toLowerCase())
-                    )
-                  ) {
-                    return;
-                  }
-                }
-                return (
-                  <Link
-                    key={index}
-                    href={"/"}
-                    className={
-                      "group bg-white/5 shadow rounded-md hover:bg-white/10 transition-colors duration-250 block pt-2.5 pb-3 px-3.5 relative"
-                    }
-                  >
-                    <h4 className={"mb-1.5"}>{org.title}</h4>
-                    <div
-                      className={"my-0.5 grid lg:grid-cols-2 grid-cols-1 gap-2"}
-                    >
-                      {!org.acfOrganisatieGegevens.locaties && (
-                        <p className={"text-sm"}>Op dit moment geen locatie</p>
-                      )}
-                      {org.acfOrganisatieGegevens.locaties?.map((loc: any) => {
-                        return (
-                          <div
-                            className={"text-sm px-2 flex gap-2 items-start"}
-                            key={loc.naam}
-                          >
-                            <img
-                              src="marker_light.svg"
-                              className={"opacity-50"}
-                              alt=""
-                            />
-                            <div className={"flex flex-col gap-1"}>
-                              <p>{loc.naam}</p>
-                              <p
-                                className={
-                                  "text-xs font-light text-white/60 whitespace-pre-wrap"
-                                }
-                              >
-                                {loc.adres}
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
+            <OrgList organisations={organisations} mapFilter={mapFilter} />
           </div>
         </section>
       </div>
