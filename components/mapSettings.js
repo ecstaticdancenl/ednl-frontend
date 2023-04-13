@@ -3,6 +3,7 @@ import { basicStyle, clusterStyle, icon } from "@/components/mapStyles";
 import { fromLonLat } from "ol/proj";
 import TileLayer from "ol/layer/Tile";
 import { Cluster, OSM, Vector as VectorSource } from "ol/source.js";
+import { XYZ } from "ol/source";
 
 export const netherlands = fromLonLat([5.2, 52.23], "EPSG:3857");
 export const extentStart = fromLonLat([3, 50.6], "EPSG:3857");

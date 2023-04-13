@@ -5,7 +5,7 @@ export function HomeIntroductie() {
   return (
     <section
       className={
-        "lg:px-10 px-6 gap-8 md:grid md:grid-cols-4 flex flex-col items-center my-12"
+        "lg:px-10 px-6 gap-8 md:grid md:grid-cols-4 flex flex-col items-center mt-12 mb-40"
       }
     >
       <img

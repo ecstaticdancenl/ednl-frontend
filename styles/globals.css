@@ -41,7 +41,10 @@ h3{
 h4{
     @apply tracking-wider font-medium md:text-lg md:leading-snug leading-snug;
 }
+h5{
+    @apply text-sm tracking-very-wide uppercase font-black text-blue-gray;
+}
 
 footer a{
-    @apply underline underline-offset-4 font-medium tracking-wider transition-colors hover:text-rose-600;
+    @apply underline underline-offset-4 font-medium tracking-wider transition-colors hover:text-rose-400;
 }

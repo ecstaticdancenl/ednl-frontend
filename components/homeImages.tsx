@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import basepath from "@/lib/basepath";
 
 const image = {
   hidden: { scale: 1.2, opacity: 0 },
@@ -33,7 +34,7 @@ export function HomeImages() {
         <motion.img
           variants={image}
           className={"skew-y-6 aspect-[0.8] object-cover"}
-          src="1.jpeg"
+          src={basepath + "/1.jpeg"}
           alt="Ecstatic Dancers"
         />
       </figure>
@@ -41,7 +42,7 @@ export function HomeImages() {
         <motion.img
           variants={image}
           className={"-skew-y-1 aspect-[0.8] object-cover"}
-          src="3.jpeg"
+          src={basepath + "/3.jpeg"}
           alt="Ecstatic Dancers"
         />
       </figure>
@@ -51,7 +52,7 @@ export function HomeImages() {
         <motion.img
           variants={image}
           className={"skew-y-3 aspect-[0.8] object-cover"}
-          src="4.jpeg"
+          src={basepath + "/4.jpeg"}
           alt="Ecstatic Dancers"
         />
       </figure>

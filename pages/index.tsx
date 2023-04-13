@@ -6,12 +6,10 @@ import { Bubbles } from "@/components/bubbles";
 import { HomeImages } from "@/components/homeImages";
 import { HomeIntroductie } from "@/components/homeIntroductie";
 import { HomeHeader } from "@/components/homeHeader";
-import { MapWrapper } from "@/components/mapWrapper";
-import { Label } from "@/components/label";
-import { Address } from "@/types/address";
 import { useState } from "react";
-import { OrgList } from "@/components/orgList";
-import { Organisation } from "@/types/organisation";
+import { Footer } from "@/components/footer";
+import { Locaties } from "@/components/locaties";
+import { getNomatimAddresses } from "@/lib/getNomatimAddresses";
 
 export async function getStaticProps() {
   //    Get data from WordPress
@@ -36,7 +34,7 @@ export async function getStaticProps() {
     `,
   });
   //   Get addresses and long lat coordinates from Nominatim
-  const addressesJSON = await getAddresses(data.organisations.nodes);
+  const addressesJSON = await getNomatimAddresses(data.organisations.nodes);
 
   return {
     props: {
@@ -44,38 +42,6 @@ export async function getStaticProps() {
       addresses: Object.fromEntries(addressesJSON),
     },
   };
-}
-
-async function getAddresses(organisations: Organisation[]) {
-  return Promise.all(
-    organisations.map(async (org: Organisation) => {
-      // If there are no locations, return an empty array
-      if (!org.acfOrganisatieGegevens.locaties) return [org.id, []];
-      const hasMultipleLocations =
-        org.acfOrganisatieGegevens.locaties.length > 1;
-
-      //   Get addresses and long lat coordinates from Nominatim
-      const addresses = await Promise.all(
-        org.acfOrganisatieGegevens.locaties.map(async (loc: any) => {
-          if (!loc.adres) return null;
-          const adres = loc.adres.replaceAll(/\r|\n/g, "+");
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/search?q=${adres}&format=json&addressdetails=1`
-          );
-          const json = await res.json();
-          const obj: Address = {
-            organisation: org.title,
-            naam: loc.naam,
-            adres: loc.adres,
-            json: json[0],
-            hasMultipleLocations,
-          };
-          return obj;
-        })
-      );
-      return [org.id, addresses];
-    })
-  );
 }
 
 type AppProps = {
@@ -103,85 +69,14 @@ export default function Home({ organisations, addresses }: AppProps) {
       <HomeImages />
       <HomeIntroductie />
 
-      <div className={"relative mt-48"}>
-        <Bubbles flipped className={"top-20"} />
-        <section
-          className={
-            "lg:px-10 px-6 flex flex-col items-center gap-4 relative -top-12"
-          }
-        >
-          <Label>Locaties</Label>
-          <h2 className={"-mt-3"}>Waar kan je dansen?</h2>
-          <div className={"relative shadow"}>
-            <input
-              className={
-                "bg-white/10 rounded-md hover:bg-white/20 py-2 px-4 placeholder-white/50 transition-colors w-72"
-              }
-              type="text"
-              placeholder={"Vind een plek..."}
-              onChange={(e) => setMapFilter(e.target.value)}
-              value={mapFilter}
-            />
-            <button
-              className={
-                "absolute rounded-md right-0 h-full px-4 hover:bg-white/20 text-2xl"
-              }
-              onClick={() => setMapFilter("")}
-            >
-              &times;
-            </button>
-          </div>
-          <div
-            className={
-              "mt-1 w-full grid grid-cols-1 md:grid-cols-2 lg:gap-6 gap-2"
-            }
-          >
-            <MapWrapper
-              filter={mapFilter}
-              addresses={addresses}
-              organisations={organisations}
-            />
-            <OrgList organisations={organisations} mapFilter={mapFilter} />
-          </div>
-        </section>
-      </div>
-      <footer
-        className={
-          "bg-blue-gray py-12 grid grid-cols-3 px-10 text-blue-950 gap-12"
-        }
-      >
-        <div>
-          <h4 className={"opacity-50"}>Over deze site</h4>
-          <p className={"mt-2 text-sm"}>
-            Deze is site is ontwikkeld zonder commercieel verdienmodel, uit
-            liefde voor Ecstatic Dance.
-            <br />♡
-          </p>
-        </div>
-        <div className={"text-center"}>
-          <h4 className={"opacity-50"}>Dank aan</h4>
-          <ul className={"mt-2 text-sm"}>
-            <li>
-              Hosting en beheer door <a href="#">Ramon</a>
-            </li>
-            <li>
-              Code door <a href="#">Sefrijn</a> van{" "}
-              <a href="#">How About Yes</a>
-            </li>
-            <li>
-              Foto’s door <a href="#">Ilse Wolf</a>
-            </li>
-          </ul>
-        </div>
-
-        <div className={"text-right"}>
-          <h4 className={"opacity-50"}>Contact</h4>
-
-          <h3>
-            <a href="mailto:info@ecstaticdance.nl">info@ecstaticdance.nl</a>
-          </h3>
-        </div>
-      </footer>
+      <Locaties
+        blobs
+        setMapfilter={setMapFilter}
+        mapFilter={mapFilter}
+        addresses={addresses}
+        organisations={organisations}
+      />
+      <Footer />
     </>
   );
 }

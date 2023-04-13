@@ -13,9 +13,10 @@ import {
   source,
 } from "@/components/mapSettings";
 import useDebounce from "@/components/debounce";
-import { createEmpty, extend, getHeight, getWidth } from "ol/extent";
-
-let highlight;
+import { DragPan, MouseWheelZoom, defaults } from "ol/interaction.js";
+import { platformModifierKeyOnly } from "ol/events/condition.js";
+import { isBrowser, isMobile } from "react-device-detect";
+import { createEmpty, extend } from "ol/extent";
 
 export function MapWrapper({ filter = "", addresses, organisations }) {
   const [map, setMap] = useState({});
@@ -55,7 +56,7 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
     if (map && map.getView && source.getFeatures().length > 0)
       map.getView().fit(source.getExtent(), {
         padding: [150, 150, 150, 150],
-        maxZoom: 11,
+        maxZoom: 13,
         duration: 1000,
       });
   }, [debouncedFilter]);
@@ -64,6 +65,16 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
     // create map
     const initialMap = new Map({
       controls: defaultControls(),
+      interactions: defaults({ dragPan: false, mouseWheelZoom: false }).extend([
+        new DragPan({
+          condition: function (event) {
+            return this.getPointerCount() === 2 || isBrowser;
+          },
+        }),
+        new MouseWheelZoom({
+          condition: () => isBrowser,
+        }),
+      ]),
       target: mapElement.current,
       layers: [raster, clusters],
       view: new View({
@@ -76,6 +87,7 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
       }),
     });
 
+    let hoverFeature;
     initialMap.on("pointermove", function (event) {
       const feature = initialMap.forEachFeatureAtPixel(
         event.pixel,
@@ -83,6 +95,15 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
           return feature;
         }
       );
+
+      if (feature?.get("features") !== hoverFeature) {
+        hoverFeature = feature;
+        // Change the cursor style to indicate that the cluster is clickable.
+        console.log("hover feature");
+        initialMap.getTargetElement().style.cursor =
+          hoverFeature && feature.get("features").length > 1 ? "pointer" : "";
+      }
+
       if (feature?.get("features").length === 1) {
         feature.get("features")[0].set("hover", true);
       } else {
@@ -92,34 +113,39 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
       }
     });
 
-    // initialMap.on("click", (event) => {
-    //   clusters.getFeatures(event.pixel).then((features) => {
-    //     if (features.length > 0) {
-    //       const clusterMembers = features[0].get("features");
-    //       if (clusterMembers.length > 1) {
-    //         // Calculate the extent of the cluster members.
-    //         const extent = createEmpty();
-    //         clusterMembers.forEach((feature) =>
-    //           extend(extent, feature.getGeometry().getExtent())
-    //         );
-    //         const view = map.getView();
-    //         const resolution = map.getView().getResolution();
-    //         if (
-    //           view.getZoom() === view.getMaxZoom() ||
-    //           (getWidth(extent) < resolution && getHeight(extent) < resolution)
-    //         ) {
-    //           // Show an expanded view of the cluster members.
-    //           // clickFeature = features[0];
-    //           // clickResolution = resolution;
-    //           // clusterCircles.setStyle(clusterCircleStyle);
-    //         } else {
-    //           // Zoom to the extent of the cluster members.
-    //           view.fit(extent, { duration: 500, padding: [50, 50, 50, 50] });
-    //         }
-    //       }
-    //     }
-    //   });
-    // });
+    initialMap.on("click", (event) => {
+      clusters.getFeatures(event.pixel).then((features) => {
+        if (features.length > 0) {
+          const clusterMembers = features[0].get("features");
+          if (clusterMembers.length > 1) {
+            // Calculate the extent of the cluster members.
+            const extent = createEmpty();
+            clusterMembers.forEach((feature) =>
+              extend(extent, feature.getGeometry().getExtent())
+            );
+            initialMap
+              .getView()
+              .fit(extent, { duration: 500, padding: [150, 150, 150, 150] });
+            //         const view = map.getView();
+            //         const resolution = map.getView().getResolution();
+            //         if (
+            //           view.getZoom() === view.getMaxZoom() ||
+            //           (getWidth(extent) < resolution && getHeight(extent) < resolution)
+            //         ) {
+            //           // Show an expanded view of the cluster members.
+            //           // clickFeature = features[0];
+            //           // clickResolution = resolution;
+            //           // clusterCircles.setStyle(clusterCircleStyle);
+            //         } else {
+            //           // Zoom to the extent of the cluster members.
+            //           view.fit(extent, { duration: 500, padding: [50, 50, 50, 50] });
+            //         }
+            //       }
+            console.log("zoomin to cluster");
+          }
+        }
+      });
+    });
 
     // save map and vector layer references to state
     setMap(initialMap);
@@ -130,9 +156,17 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
 
   return (
     <div
-      style={{ height: "calc(100vh - 90px)", width: "100%" }}
+      // style={{ height: "calc(100vh - 90px)", width: "100%" }}
       ref={mapElement}
-      className="bg-white/80 map-container rounded-md overflow-clip sticky top-10"
+      className="bg-white/80 map-container rounded-md overflow-clip md:sticky md:top-10 md:h-[calc(100vh-90px)] h-[50vh] w-full"
     />
+  );
+}
+
+function isTouchDevice() {
+  return (
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    navigator.msMaxTouchPoints > 0
   );
 }

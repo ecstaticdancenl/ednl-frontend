@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Organisation } from "@/types/organisation";
 import { getHighlightedText } from "@/components/highlightText";
+import basepath from "@/lib/basepath";
 
 type OrgListProps = {
   organisations: { nodes: [] };
@@ -32,7 +33,7 @@ export function OrgList({ organisations, mapFilter }: OrgListProps) {
             }
           >
             <h4 className={"mb-1.5"}>{org.title}</h4>
-            <div className={"my-0.5 grid lg:grid-cols-2 grid-cols-1 gap-2"}>
+            <div className={"my-0.5 grid sm:grid-cols-2 grid-cols-1 gap-2"}>
               {!org.acfOrganisatieGegevens.locaties && (
                 <p className={"text-sm"}>Op dit moment geen locatie</p>
               )}
@@ -43,7 +44,7 @@ export function OrgList({ organisations, mapFilter }: OrgListProps) {
                     key={loc.naam}
                   >
                     <img
-                      src="marker_light.svg"
+                      src={basepath + "/marker_light.svg"}
                       className={"opacity-50"}
                       alt=""
                     />

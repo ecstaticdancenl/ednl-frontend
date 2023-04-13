@@ -56,43 +56,46 @@ export function Bubbles({ flipped = false, className = "" }) {
         return (
           <motion.div
             key={index}
+            className={"flex h-full"}
             initial={"initial"}
             animate={"animate"}
             whileHover={"hover"}
             variants={bubbleVariants}
-            className={`relative aspect-square ${
-              index % 2 === 0 ? "self-start" : "self-end"
-            }`}
-            // style={{ filter: "blur(6vw)" }}
           >
-            <motion.div
-              variants={bubbleVariantsBack}
-              style={{
-                height: size + "%",
-                width: size + "%",
-                top: -(size - 100) / 2 + "%",
-                left: -(size - 100) / 2 + "%",
-                filter: "blur(6vw)",
-              }}
-              transition={{
-                duration: bubbleDuration[index],
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className={`pointer-events-none z-10 absolute rounded-full ${bubbleColors[index]} `}
-            ></motion.div>
-            <motion.div
-              variants={bubbleVariantsFront}
-              style={{
-                height: size + "%",
-                width: size + "%",
-                top: -(size - 100) / 2 + "%",
-                left: -(size - 100) / 2 + "%",
-                filter: "blur(6vw)",
-              }}
-              transition={{ duration: 0.6, repeat: 0, ease: "easeInOut" }}
-              className={`pointer-events-none z-20 absolute rounded-full ${bubbleColors[index]} `}
-            ></motion.div>
+            <div
+              className={`w-full relative aspect-square ${
+                index % 2 === 0 ? "self-start" : "self-end"
+              }`}
+            >
+              <motion.div
+                variants={bubbleVariantsBack}
+                style={{
+                  height: size + "%",
+                  width: size + "%",
+                  top: -(size - 100) / 2 + "%",
+                  left: -(size - 100) / 2 + "%",
+                  filter: "blur(6vw)",
+                }}
+                transition={{
+                  duration: bubbleDuration[index],
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className={`pointer-events-none z-10 absolute rounded-full ${bubbleColors[index]} `}
+              ></motion.div>
+              <motion.div
+                variants={bubbleVariantsFront}
+                style={{
+                  height: size + "%",
+                  width: size + "%",
+                  top: -(size - 100) / 2 + "%",
+                  left: -(size - 100) / 2 + "%",
+                  filter: "blur(6vw)",
+                }}
+                transition={{ duration: 0.6, repeat: 0, ease: "easeInOut" }}
+                className={`pointer-events-none z-20 absolute rounded-full ${bubbleColors[index]} `}
+              ></motion.div>
+            </div>
           </motion.div>
         );
       })}

@@ -9,7 +9,7 @@ export const getHighlightedText = (text, highlight) => {
           className={
             part.toLowerCase() === highlight.toLowerCase() &&
             highlight.length > 2
-              ? "bg-white/20" //"decoration-2 underline-offset-2 underline decoration-white/50 text-blue-100"
+              ? "bg-white/20"
               : ""
           }
         >

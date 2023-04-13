@@ -42,7 +42,7 @@ export function Navigation() {
             {!isMD && <NavItem href={"/"}>Home</NavItem>}
             <NavItem href={"/over"}>Introductie</NavItem>
             <NavItem href={"/locaties"}>Locaties</NavItem>
-            <NavItem href={"/locaties"}>Agenda</NavItem>
+            <NavItem href={"/agenda"}>Agenda</NavItem>
           </motion.nav>
         )}
       </AnimatePresence>

@@ -1,9 +1,10 @@
 // Map marker
 import { Fill, Icon, Stroke, Style, Text } from "ol/style";
 import CircleStyle from "ol/style/Circle";
+import basepath from "@/lib/basepath";
 
 export const icon = new Icon({
-  src: "marker.svg",
+  src: basepath + "/marker.svg",
 });
 export const clusterStyle = (feature) => {
   const size = feature.get("features").length;
@@ -66,7 +67,7 @@ export const clusterStyle = (feature) => {
   // Group of organisations, show size
   return new Style({
     image: new CircleStyle({
-      radius: 10,
+      radius: 14,
       stroke: new Stroke({
         color: "#1e40af55",
       }),

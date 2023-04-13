@@ -5,7 +5,13 @@ export function NavItem({ href, children }: { href: string; children: any }) {
   const router = useRouter();
 
   return (
-    <Link className={"underline_animated md:text-base text-4xl"} href={href}>
+    <Link
+      className={[
+        router.pathname.startsWith(href) ? "underline_animated_active" : "",
+        "underline_animated md:text-base text-4xl",
+      ].join(" ")}
+      href={href}
+    >
       {children}
     </Link>
   );
