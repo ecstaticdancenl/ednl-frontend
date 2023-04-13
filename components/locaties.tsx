@@ -2,19 +2,45 @@ import { Bubbles } from "@/components/bubbles";
 import { Label } from "@/components/label";
 import { MapWrapper } from "@/components/mapWrapper";
 import { OrgList } from "@/components/orgList";
+import { useEffect, useState } from "react";
+
+const scrollIntoViewWithOffset = (selector: string, offset: number) => {
+  const el = document.getElementById(selector);
+  if (el) {
+    window.scrollTo({
+      behavior: "smooth",
+      top:
+        el.getBoundingClientRect()?.top -
+        document.body.getBoundingClientRect().top -
+        offset,
+    });
+  }
+};
 
 export function Locaties(props: {
   blobs: boolean;
-  setMapfilter: Function;
-  mapFilter: string;
   addresses: [];
   organisations: { nodes: [] };
 }) {
+  const [mapFilter, setMapFilter] = useState<string>("");
+
+  useEffect(() => {
+    if (mapFilter !== "" && props.blobs) {
+      scrollIntoViewWithOffset("locaties", 20);
+    }
+  }, [mapFilter]);
+
   return (
     <div className={props.blobs ? "relative my-24" : "relative mt-8 mb-24"}>
       {props.blobs && <Bubbles flipped className={"top-12"} />}
 
-      <section className={"lg:px-10 px-6 flex flex-col items-center gap-4"}>
+      <section
+        className={"lg:px-10 px-6 flex flex-col items-center gap-4 relative"}
+      >
+        <span
+          id={"locaties"}
+          className={"h-1 w-1 absolute top-0 left-0"}
+        ></span>
         <Label>Locaties</Label>
         <h2 className={"-mt-3"}>Waar kan je dansen?</h2>
         <div className={"relative shadow"}>
@@ -24,17 +50,22 @@ export function Locaties(props: {
             }
             type="text"
             placeholder={"Vind een plek..."}
-            onChange={(e) => props.setMapfilter(e.target.value)}
-            value={props.mapFilter}
+            onChange={(e) => setMapFilter(e.target.value)}
+            value={mapFilter}
           />
-          <button
-            className={
-              "absolute rounded-md right-0 h-full px-4 hover:bg-white/20 text-2xl"
-            }
-            onClick={() => props.setMapfilter("")}
-          >
-            &times;
-          </button>
+          {mapFilter !== "" && (
+            <button
+              className={
+                "absolute rounded-md right-0 h-full px-4 hover:bg-white/20 text-2xl"
+              }
+              onClick={() => {
+                setMapFilter("");
+                if (props.blobs) scrollIntoViewWithOffset("locaties", 20);
+              }}
+            >
+              &times;
+            </button>
+          )}
         </div>
         <div
           className={
@@ -42,14 +73,11 @@ export function Locaties(props: {
           }
         >
           <MapWrapper
-            filter={props.mapFilter}
+            filter={mapFilter}
             addresses={props.addresses}
             organisations={props.organisations}
           />
-          <OrgList
-            organisations={props.organisations}
-            mapFilter={props.mapFilter}
-          />
+          <OrgList organisations={props.organisations} mapFilter={mapFilter} />
         </div>
       </section>
     </div>

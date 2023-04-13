@@ -3,7 +3,12 @@ import { Squeeze as Hamburger } from "hamburger-react";
 import { NavItem } from "@/components/navItem";
 import { useIsMD } from "@/lib/mediaQuery";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from "framer-motion";
 export function Navigation() {
   const isMD = useIsMD();
   const [isOpen, setOpen] = useState(false);
@@ -14,17 +19,31 @@ export function Navigation() {
       setOpen(false);
     }
   }, [isMD]);
+
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if (latest > 40) {
+      setScrolled(true);
+    } else {
+      setScrolled(false);
+    }
+  });
+
   return (
     <div
-      className={
-        "flex justify-between items-center relative z-50 lg:px-10 px-6 lg:py-8 py-5"
-      }
+      className={[
+        "transition-all duration-500 sticky top-0 flex justify-between items-center relative z-50 lg:px-10 px-6 backdrop-filter backdrop-blur-sm",
+        scrolled ? "bg-slate-900/30 py-2" : "lg:py-8 py-5",
+      ].join(" ")}
     >
       <Link
         href={"/"}
-        className={
-          "z-20 underline_animated uppercase tracking-very-wide font-bold sm:text-lg text-base"
-        }
+        className={[
+          "z-20 underline_animated uppercase tracking-very-wide font-bold transition-all duration-500",
+          scrolled ? "text-sm" : "sm:text-lg text-base",
+        ].join(" ")}
       >
         Ecstatic Dance <span className={"font-normal text-sm"}>.nl</span>
       </Link>

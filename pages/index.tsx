@@ -51,7 +51,6 @@ type AppProps = {
 };
 
 export default function Home({ organisations, addresses }: AppProps) {
-  const [mapFilter, setMapFilter] = useState<string>("");
   return (
     <>
       <Head>
@@ -69,13 +68,7 @@ export default function Home({ organisations, addresses }: AppProps) {
       <HomeImages />
       <HomeIntroductie />
 
-      <Locaties
-        blobs
-        setMapfilter={setMapFilter}
-        mapFilter={mapFilter}
-        addresses={addresses}
-        organisations={organisations}
-      />
+      <Locaties blobs addresses={addresses} organisations={organisations} />
       <Footer />
     </>
   );

@@ -67,8 +67,6 @@ export default function LocatiesIndex({ organisations, addresses }: AppProps) {
       <Bubbles />
       <Locaties
         blobs={false}
-        setMapfilter={setMapFilter}
-        mapFilter={mapFilter}
         addresses={addresses}
         organisations={organisations}
       />

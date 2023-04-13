@@ -23,13 +23,17 @@ const figure = {
 export function HomeImages() {
   return (
     <motion.div
-      className={"md:my-16 my-12 lg:px-10 px-6 grid grid-cols-3 sm:gap-4 gap-2"}
+      className={
+        "md:my-16 my-12 lg:px-10 px-6 grid md:grid-cols-3 grid-cols-2 sm:gap-4 gap-2"
+      }
       initial={"hidden"}
       whileInView={"show"}
       variants={figure}
     >
       <figure
-        className={"translate-y-3.5 -skew-y-6 overflow-clip rounded-2xl group"}
+        className={
+          "hidden md:block translate-y-3.5 -skew-y-6 overflow-clip rounded-2xl group"
+        }
       >
         <motion.img
           variants={image}

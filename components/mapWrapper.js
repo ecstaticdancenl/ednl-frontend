@@ -22,6 +22,7 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
   const [map, setMap] = useState({});
   const mapElement = useRef();
   const debouncedFilter = useDebounce(filter, 500);
+  const [mobile, setMobile] = useState(false);
 
   useEffect(() => {
     let features = [];
@@ -37,7 +38,7 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
         if (address.hasMultipleLocations) {
           feature.set("naam", address.naam);
         }
-        feature.set("hover", false);
+        feature.set("hover", 0);
         if (
           address.organisation.toLowerCase().includes(filter.toLowerCase()) ||
           address.naam.toLowerCase().includes(filter.toLowerCase()) ||
@@ -99,17 +100,8 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
       if (feature?.get("features") !== hoverFeature) {
         hoverFeature = feature;
         // Change the cursor style to indicate that the cluster is clickable.
-        console.log("hover feature");
         initialMap.getTargetElement().style.cursor =
           hoverFeature && feature.get("features").length > 1 ? "pointer" : "";
-      }
-
-      if (feature?.get("features").length === 1) {
-        feature.get("features")[0].set("hover", true);
-      } else {
-        source.getFeatures().forEach(function (feature) {
-          feature.set("hover", false);
-        });
       }
     });
 
@@ -126,22 +118,6 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
             initialMap
               .getView()
               .fit(extent, { duration: 500, padding: [150, 150, 150, 150] });
-            //         const view = map.getView();
-            //         const resolution = map.getView().getResolution();
-            //         if (
-            //           view.getZoom() === view.getMaxZoom() ||
-            //           (getWidth(extent) < resolution && getHeight(extent) < resolution)
-            //         ) {
-            //           // Show an expanded view of the cluster members.
-            //           // clickFeature = features[0];
-            //           // clickResolution = resolution;
-            //           // clusterCircles.setStyle(clusterCircleStyle);
-            //         } else {
-            //           // Zoom to the extent of the cluster members.
-            //           view.fit(extent, { duration: 500, padding: [50, 50, 50, 50] });
-            //         }
-            //       }
-            console.log("zoomin to cluster");
           }
         }
       });
@@ -149,6 +125,7 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
 
     // save map and vector layer references to state
     setMap(initialMap);
+    setMobile(isMobile);
     return () => {
       initialMap.setTarget(undefined);
     };
@@ -156,10 +133,20 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
 
   return (
     <div
-      // style={{ height: "calc(100vh - 90px)", width: "100%" }}
-      ref={mapElement}
-      className="bg-white/80 map-container rounded-md overflow-clip md:sticky md:top-10 md:h-[calc(100vh-90px)] h-[50vh] w-full"
-    />
+      className={"md:sticky md:top-16 md:h-[calc(100vh-225px)] h-[50vh] w-full"}
+    >
+      <div
+        // style={{ height: "calc(100vh - 90px)", width: "100%" }}
+        style={{ maxHeight: "800px" }}
+        ref={mapElement}
+        className="map-container w-full h-full rounded-md overflow-clip bg-white/80"
+      />
+      {mobile && (
+        <p className={"text-center text-xs opacity-50 mb-4 absolute top-full"}>
+          Gebruik 2 vingers om kaart te verplaatsen
+        </p>
+      )}
+    </div>
   );
 }
 

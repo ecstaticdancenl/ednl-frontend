@@ -27,9 +27,9 @@ export function OrgList({ organisations, mapFilter }: OrgListProps) {
         return (
           <Link
             key={index}
-            href={"/"}
+            href={"/locaties/" + org.slug}
             className={
-              "group bg-white/5 shadow rounded-md hover:bg-white/10 transition-colors duration-250 block pt-2.5 pb-3 px-3.5 relative"
+              "group bg-white/5 shadow rounded-md hover:bg-white/10 transition-colors block pt-2.5 pb-3 px-3.5 relative"
             }
           >
             <h4 className={"mb-1.5"}>{org.title}</h4>
