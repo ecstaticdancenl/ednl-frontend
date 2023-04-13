@@ -122,12 +122,14 @@ export default function Locatie({ organisation, addresses }: AppProps) {
           }
         >
           <h1>{organisation.title}</h1>
-          <a
-            target={"_blank"}
-            href={organisation.acfOrganisatieGegevens.website}
-          >
-            {niceURL(organisation.acfOrganisatieGegevens.website)}
-          </a>
+          {organisation.acfOrganisatieGegevens.website && (
+            <a
+              target={"_blank"}
+              href={organisation.acfOrganisatieGegevens.website}
+            >
+              {niceURL(organisation.acfOrganisatieGegevens.website)}
+            </a>
+          )}
         </div>
       </header>
       <div className={"my-8 flex flex-col items-center mx-auto relative z-10"}>
