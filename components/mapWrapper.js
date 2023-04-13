@@ -12,12 +12,14 @@ import {
   raster,
   source,
 } from "@/components/mapSettings";
+import useDebounce from "@/components/debounce";
 
 let highlight;
 
 export function MapWrapper({ filter = "", addresses, organisations }) {
   const [map, setMap] = useState({});
   const mapElement = useRef();
+  const debouncedFilter = useDebounce(filter, 500);
 
   useEffect(() => {
     let features = [];
@@ -29,7 +31,9 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
         );
         const feature = new Feature(new Point(coordinate));
         feature.set("organisation", address.organisation);
-        feature.set("naam", address.naam);
+        if (address.hasMultipleLocations) {
+          feature.set("naam", address.naam);
+        }
         feature.set("hover", false);
         if (
           address.organisation.toLowerCase().includes(filter.toLowerCase()) ||
@@ -45,6 +49,15 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
   }, [filter]);
 
   useEffect(() => {
+    if (map && map.getView && source.getFeatures().length > 0)
+      map.getView().fit(source.getExtent(), {
+        padding: [150, 150, 150, 150],
+        maxZoom: 11,
+        duration: 1000,
+      });
+  }, [debouncedFilter]);
+
+  useEffect(() => {
     // create map
     const initialMap = new Map({
       controls: defaultControls(),
@@ -55,6 +68,7 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
         center: netherlands,
         zoom: 7.2,
         minZoom: 7.2,
+        maxZoom: 16,
         extent: [...extentStart, ...extentEnd],
       }),
     });
@@ -71,7 +85,6 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
         feature.get("features")[0].set("hover", true);
       } else {
         source.getFeatures().forEach(function (feature) {
-          console.log(feature);
           feature.set("hover", false);
           // feature.get("features")?.[0].set("naam", "NEE");
         });
@@ -94,9 +107,9 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
 
   return (
     <div
-      style={{ height: "500px", width: "100%" }}
+      style={{ height: "calc(100vh - 90px)", width: "100%" }}
       ref={mapElement}
-      className="map-container rounded-md overflow-clip sticky top-12"
+      className="bg-white/80 map-container rounded-md overflow-clip sticky top-10"
     />
   );
 }

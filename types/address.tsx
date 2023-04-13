@@ -3,5 +3,6 @@ export interface Address {
   naam: string;
   adres: string;
   json: any;
+  hasMultipleLocations: boolean;
   // adresPlain: string;
 }

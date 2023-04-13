@@ -17,7 +17,7 @@ export function Navigation() {
   return (
     <div
       className={
-        "flex justify-between items-center relative z-50 lg:px-12 px-6 lg:py-6 py-5"
+        "flex justify-between items-center relative z-50 lg:px-10 px-6 lg:py-8 py-5"
       }
     >
       <Link

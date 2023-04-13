@@ -50,6 +50,8 @@ async function getAddresses(organisations: Organisation[]) {
     organisations.map(async (org: Organisation) => {
       // If there are no locations, return an empty array
       if (!org.acfOrganisatieGegevens.locaties) return [org.id, []];
+      const hasMultipleLocations =
+        org.acfOrganisatieGegevens.locaties.length > 1;
 
       //   Get addresses and long lat coordinates from Nominatim
       const addresses = await Promise.all(
@@ -64,6 +66,7 @@ async function getAddresses(organisations: Organisation[]) {
             naam: loc.naam,
             adres: loc.adres,
             json: json[0],
+            hasMultipleLocations,
           };
           return obj;
         })
@@ -116,25 +119,41 @@ export default function Home({ organisations, addresses }: AppProps) {
         <Bubbles flipped className={"top-20"} />
         <section
           className={
-            "lg:px-12 px-6 flex flex-col items-center gap-4 relative -top-12"
+            "lg:px-10 px-6 flex flex-col items-center gap-4 relative -top-12"
           }
         >
           <Label>Locaties</Label>
           <h2 className={"-mt-3"}>Waar kan je dansen?</h2>
-          <input
-            className={"bg-white/10 rounded-md p-2 "}
-            type="text"
-            placeholder={"Zoek locatie"}
-            onChange={(e) => setMapFilter(e.target.value)}
-            value={mapFilter}
-          />
-          <div className={"mt-3 w-full grid grid-cols-2 gap-8"}>
+          <div className={"relative shadow"}>
+            <input
+              className={
+                "bg-white/10 rounded-md hover:bg-white/20 py-2 px-4 placeholder-white/50 transition-colors w-72"
+              }
+              type="text"
+              placeholder={"Vind een plek..."}
+              onChange={(e) => setMapFilter(e.target.value)}
+              value={mapFilter}
+            />
+            <button
+              className={
+                "absolute rounded-md right-0 h-full px-4 hover:bg-white/20 text-2xl"
+              }
+              onClick={() => setMapFilter("")}
+            >
+              &times;
+            </button>
+          </div>
+          <div
+            className={
+              "mt-1 w-full grid grid-cols-1 md:grid-cols-2 lg:gap-6 gap-2"
+            }
+          >
             <MapWrapper
               filter={mapFilter}
               addresses={addresses}
               organisations={organisations}
             />
-            <div>
+            <div className={"flex flex-col gap-2"}>
               {organisations.nodes.map((org: Organisation, index) => {
                 if (mapFilter !== "") {
                   if (
@@ -149,47 +168,46 @@ export default function Home({ organisations, addresses }: AppProps) {
                   }
                 }
                 return (
-                  <div className={"pb-4"} key={index}>
-                    <Link href={"/"} className={"group flex justify-between"}>
-                      <h4 className={"group-hover:underline"}>{org.title}</h4>
-                      <span
-                        className={
-                          "opacity-10 group-hover:opacity-50 transition-opacity"
-                        }
-                      >
-                        →
-                      </span>
-                    </Link>
-                    {!org.acfOrganisatieGegevens.locaties && (
-                      <p className={"text-sm p-2"}>
-                        Op dit moment geen locatie
-                      </p>
-                    )}
-                    {org.acfOrganisatieGegevens.locaties?.map((loc: any) => {
-                      return (
-                        <div
-                          className={"text-sm p-1 flex gap-2 items-start"}
-                          key={loc.naam}
-                        >
-                          <img
-                            src="marker_light.svg"
-                            className={"opacity-50"}
-                            alt=""
-                          />
-                          <div className={"flex flex-col gap-1"}>
-                            <p>{loc.naam}</p>
-                            <p
-                              className={
-                                "text-xs font-light text-white/60 whitespace-pre-wrap"
-                              }
-                            >
-                              {loc.adres}
-                            </p>
+                  <Link
+                    key={index}
+                    href={"/"}
+                    className={
+                      "group bg-white/5 shadow rounded-md hover:bg-white/10 transition-colors duration-250 block pt-2.5 pb-3 px-3.5 relative"
+                    }
+                  >
+                    <h4 className={"mb-1.5"}>{org.title}</h4>
+                    <div
+                      className={"my-0.5 grid lg:grid-cols-2 grid-cols-1 gap-2"}
+                    >
+                      {!org.acfOrganisatieGegevens.locaties && (
+                        <p className={"text-sm"}>Op dit moment geen locatie</p>
+                      )}
+                      {org.acfOrganisatieGegevens.locaties?.map((loc: any) => {
+                        return (
+                          <div
+                            className={"text-sm px-2 flex gap-2 items-start"}
+                            key={loc.naam}
+                          >
+                            <img
+                              src="marker_light.svg"
+                              className={"opacity-50"}
+                              alt=""
+                            />
+                            <div className={"flex flex-col gap-1"}>
+                              <p>{loc.naam}</p>
+                              <p
+                                className={
+                                  "text-xs font-light text-white/60 whitespace-pre-wrap"
+                                }
+                              >
+                                {loc.adres}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                        );
+                      })}
+                    </div>
+                  </Link>
                 );
               })}
             </div>
@@ -197,12 +215,6 @@ export default function Home({ organisations, addresses }: AppProps) {
         </section>
       </div>
       <section className={"py-56"}>Aankomende dansen</section>
-
-      {/*<section>*/}
-      {/*  {organisations.nodes.map((org: Organisation, index) => {*/}
-      {/*    return <div key={index}>{org.title}</div>;*/}
-      {/*  })}*/}
-      {/*</section>*/}
     </>
   );
 }

@@ -9,6 +9,9 @@ module.exports = {
       sans: ["var(--outfit-font)", "sans-serif"],
     },
     extend: {
+      fontSize: {
+        xxs: "0.625rem",
+      },
       letterSpacing: {
         "very-wide": "0.2em",
       },

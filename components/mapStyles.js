@@ -11,25 +11,25 @@ export const clusterStyle = (feature) => {
   const naam = feature.get("features")[0].get("naam");
   const hover = feature.get("features")[0].get("hover") === true;
   // Single organisation
-  if (!hover && size === 1) {
-    return [
-      new Style({
-        image: icon,
-        // text: new Text({
-        //   text: organisation,
-        //   fill: new Fill({
-        //     color: "#fff",
-        //   }),
-        //   stroke: new Stroke({
-        //     color: "#00000099",
-        //     width: 5,
-        //   }),
-        //   offsetY: 15,
-        //   font: "normal 13px __Outfit_adb80a",
-        // }),
-      }),
-    ];
-  }
+  // if (!hover && size === 1) {
+  //   return [
+  //     new Style({
+  //       image: icon,
+  //       // text: new Text({
+  //       //   text: organisation,
+  //       //   fill: new Fill({
+  //       //     color: "#fff",
+  //       //   }),
+  //       //   stroke: new Stroke({
+  //       //     color: "#00000099",
+  //       //     width: 5,
+  //       //   }),
+  //       //   offsetY: 15,
+  //       //   font: "normal 13px __Outfit_adb80a",
+  //       // }),
+  //     }),
+  //   ];
+  // }
   if (size === 1) {
     return [
       new Style({
@@ -44,7 +44,7 @@ export const clusterStyle = (feature) => {
             width: 5,
           }),
           offsetY: 15,
-          font: "13px __Outfit_adb80a",
+          font: "11px __Outfit_adb80a",
         }),
       }),
       new Style({
@@ -58,7 +58,7 @@ export const clusterStyle = (feature) => {
             width: 5,
           }),
           offsetY: 28,
-          font: "normal 12px __Outfit_adb80a",
+          font: "normal 10px __Outfit_adb80a",
         }),
       }),
     ];

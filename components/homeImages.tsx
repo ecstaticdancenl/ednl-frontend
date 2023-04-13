@@ -22,7 +22,7 @@ const figure = {
 export function HomeImages() {
   return (
     <motion.div
-      className={"md:my-16 my-12 lg:px-12 px-6 grid grid-cols-3 sm:gap-4 gap-2"}
+      className={"md:my-16 my-12 lg:px-10 px-6 grid grid-cols-3 sm:gap-4 gap-2"}
       initial={"hidden"}
       whileInView={"show"}
       variants={figure}
