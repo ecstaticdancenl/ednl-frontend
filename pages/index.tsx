@@ -56,6 +56,7 @@ async function getAddresses(organisations: Organisation[]) {
       //   Get addresses and long lat coordinates from Nominatim
       const addresses = await Promise.all(
         org.acfOrganisatieGegevens.locaties.map(async (loc: any) => {
+          if (!loc.adres) return null;
           const adres = loc.adres.replaceAll(/\r|\n/g, "+");
           const res = await fetch(
             `https://nominatim.openstreetmap.org/search?q=${adres}&format=json&addressdetails=1`
@@ -214,7 +215,43 @@ export default function Home({ organisations, addresses }: AppProps) {
           </div>
         </section>
       </div>
-      <section className={"py-56"}>Aankomende dansen</section>
+      <footer
+        className={
+          "bg-blue-gray py-12 grid grid-cols-3 px-10 text-blue-950 gap-12"
+        }
+      >
+        <div>
+          <h4 className={"opacity-50"}>Over deze site</h4>
+          <p className={"mt-2 text-sm"}>
+            Deze is site is ontwikkeld zonder commercieel verdienmodel, uit
+            liefde voor Ecstatic Dance.
+            <br />♡
+          </p>
+        </div>
+        <div className={"text-center"}>
+          <h4 className={"opacity-50"}>Dank aan</h4>
+          <ul className={"mt-2 text-sm"}>
+            <li>
+              Hosting en beheer door <a href="#">Ramon</a>
+            </li>
+            <li>
+              Code door <a href="#">Sefrijn</a> van{" "}
+              <a href="#">How About Yes</a>
+            </li>
+            <li>
+              Foto’s door <a href="#">Ilse Wolf</a>
+            </li>
+          </ul>
+        </div>
+
+        <div className={"text-right"}>
+          <h4 className={"opacity-50"}>Contact</h4>
+
+          <h3>
+            <a href="mailto:info@ecstaticdance.nl">info@ecstaticdance.nl</a>
+          </h3>
+        </div>
+      </footer>
     </>
   );
 }

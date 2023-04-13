@@ -13,6 +13,7 @@ import {
   source,
 } from "@/components/mapSettings";
 import useDebounce from "@/components/debounce";
+import { createEmpty, extend, getHeight, getWidth } from "ol/extent";
 
 let highlight;
 
@@ -25,6 +26,7 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
     let features = [];
     for (const organisationID in addresses) {
       for (const address of addresses[organisationID]) {
+        if (!address?.json) continue;
         const coordinate = fromLonLat(
           [address.json.lon, address.json.lat],
           "EPSG:3857"
@@ -80,23 +82,43 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
           return feature;
         }
       );
-      //
       if (feature?.get("features").length === 1) {
         feature.get("features")[0].set("hover", true);
       } else {
         source.getFeatures().forEach(function (feature) {
           feature.set("hover", false);
-          // feature.get("features")?.[0].set("naam", "NEE");
         });
       }
-      //   // if (feature === marker) {
-      //   // show the text if the mouse is over the marker
-      //   // source.getFeatureByUid().getStyle().getText().setText('Some text');
-      //   // } else {
-      //   // hide the text if the mouse is not over the marker
-      //   // marker.getStyle().getText().setText('');
-      //   // }
     });
+
+    // initialMap.on("click", (event) => {
+    //   clusters.getFeatures(event.pixel).then((features) => {
+    //     if (features.length > 0) {
+    //       const clusterMembers = features[0].get("features");
+    //       if (clusterMembers.length > 1) {
+    //         // Calculate the extent of the cluster members.
+    //         const extent = createEmpty();
+    //         clusterMembers.forEach((feature) =>
+    //           extend(extent, feature.getGeometry().getExtent())
+    //         );
+    //         const view = map.getView();
+    //         const resolution = map.getView().getResolution();
+    //         if (
+    //           view.getZoom() === view.getMaxZoom() ||
+    //           (getWidth(extent) < resolution && getHeight(extent) < resolution)
+    //         ) {
+    //           // Show an expanded view of the cluster members.
+    //           // clickFeature = features[0];
+    //           // clickResolution = resolution;
+    //           // clusterCircles.setStyle(clusterCircleStyle);
+    //         } else {
+    //           // Zoom to the extent of the cluster members.
+    //           view.fit(extent, { duration: 500, padding: [50, 50, 50, 50] });
+    //         }
+    //       }
+    //     }
+    //   });
+    // });
 
     // save map and vector layer references to state
     setMap(initialMap);
