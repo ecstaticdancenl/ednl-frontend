@@ -34,14 +34,16 @@ export function Navigation() {
   return (
     <div
       className={[
-        "transition-all duration-500 sticky top-0 flex justify-between items-center relative z-50 lg:px-10 px-6 backdrop-filter backdrop-blur-sm",
-        scrolled ? "bg-slate-900/30 py-2" : "lg:py-8 py-5",
+        "transition-all duration-250 sticky top-0 flex justify-between items-center relative z-50 lg:px-10 px-6",
+        scrolled
+          ? "backdrop-filter backdrop-blur-sm bg-slate-900/30 py-2 mb-[44px]"
+          : "lg:py-8 py-5 mb-0",
       ].join(" ")}
     >
       <Link
         href={"/"}
         className={[
-          "z-20 underline_animated uppercase tracking-very-wide font-bold transition-all duration-500",
+          "z-20 underline_animated uppercase tracking-very-wide font-bold transition-all duration-250",
           scrolled ? "text-sm" : "sm:text-lg text-base",
         ].join(" ")}
       >

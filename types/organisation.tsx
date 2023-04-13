@@ -1,4 +1,5 @@
-export type Organisation = {
+export interface Organisation {
+  content: string;
   id: string;
   title: string;
   slug: string;
@@ -8,12 +9,15 @@ export type Organisation = {
     };
   };
   acfOrganisatieGegevens: {
+    email: string;
+    website: string;
     locaties: [
       {
         naam: string;
         adres: string;
         adresPlain: string;
+        over: string;
       }
     ];
   };
-};
+}

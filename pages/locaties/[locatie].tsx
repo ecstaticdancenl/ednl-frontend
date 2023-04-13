@@ -10,6 +10,9 @@ import { HomeIntroductie } from "@/components/homeIntroductie";
 import { Locaties } from "@/components/locaties";
 import { Footer } from "@/components/footer";
 import { Organisation } from "@/types/organisation";
+import basepath from "@/lib/basepath";
+import { getHighlightedText } from "@/components/highlightText";
+import { Label } from "@/components/label";
 
 export async function getStaticProps({ params }: any) {
   //    Get data from WordPress
@@ -28,20 +31,26 @@ export async function getStaticProps({ params }: any) {
           slug
           acfOrganisatieGegevens {
             email
-            fieldGroupName
+            website
+            locaties {
+              naam
+              adres
+              over
+            }
           }
         }
       }
     `,
   });
   //   Get addresses and long lat coordinates from Nominatim
-  const addressesJSON = await getNomatimAddresses([data.organisation]);
+  // const addressesJSON = await getNomatimAddresses([data.organisation]);
+  let addressesJSON;
 
   return {
     props: {
       locatie: params.locatie,
       organisation: data.organisation,
-      addresses: Object.fromEntries(addressesJSON),
+      addresses: addressesJSON ? Object.fromEntries(addressesJSON) : null,
     },
   };
 }
@@ -74,8 +83,18 @@ type AppProps = {
   addresses: [];
 };
 
+function niceURL(url: string) {
+  let cleanURL = url
+    .replace("http://", "")
+    .replace("https://", "")
+    .replace("www.", "");
+  if (cleanURL.endsWith("/")) {
+    cleanURL = cleanURL.slice(0, -1);
+  }
+  return cleanURL;
+}
+
 export default function Locatie({ organisation, addresses }: AppProps) {
-  console.log(organisation);
   return (
     <>
       <Head>
@@ -89,25 +108,82 @@ export default function Locatie({ organisation, addresses }: AppProps) {
       </Head>
       <Navigation />
       <Bubbles />
-      <div className="relative h-[50vh] z-10 px-10">
+      <header className="locatie relative h-[50vh] z-10 mx-10">
         {organisation.featuredImage && (
           <img
-            className={"object-cover w-full h-full absolute rounded-md"}
+            className={"object-cover w-full h-full absolute rounded-2xl"}
             src={organisation.featuredImage.node.sourceUrl}
             alt=""
           />
         )}
         <div
           className={
-            "rounded-md bg-blue-900/30 relative z-10 w-full h-full flex flex-col items-center justify-center text-center"
+            "rounded-2xl bg-blue-900/30 relative z-10 w-full h-full flex flex-col items-center justify-center text-center"
           }
         >
           <h1>{organisation.title}</h1>
+          <a
+            target={"_blank"}
+            href={organisation.acfOrganisatieGegevens.website}
+          >
+            {niceURL(organisation.acfOrganisatieGegevens.website)}
+          </a>
+        </div>
+      </header>
+      <div className={"my-8 flex flex-col items-center mx-auto relative z-10"}>
+        <Label>
+          Locatie
+          {organisation.acfOrganisatieGegevens.locaties.length > 1 && "s"}
+        </Label>
+        <div
+          className={
+            "grid grid-cols-4 mt-2 text-left max-w-screen-sm w-full gap-2"
+          }
+        >
+          {!organisation.acfOrganisatieGegevens.locaties && (
+            <p className={"text-sm"}>Op dit moment geen locatie</p>
+          )}
+          {organisation.acfOrganisatieGegevens.locaties?.map((loc: any) => {
+            return (
+              <div
+                className={[
+                  organisation.acfOrganisatieGegevens.locaties.length === 1
+                    ? "col-start-2"
+                    : "",
+                  "text-base p-3 rounded-md flex gap-2 items-start bg-white/5 col-span-2",
+                ].join(" ")}
+                key={loc.naam}
+              >
+                <img src={basepath + "/marker_light.svg"} alt="" />
+                <div className={"flex flex-col gap-1"}>
+                  <p>{loc.naam}</p>
+                  <p
+                    className={
+                      "text-sm font-light text-white/60 whitespace-pre-wrap"
+                    }
+                  >
+                    {loc.adres}
+                  </p>
+                  {loc.over && (
+                    <p
+                      className={
+                        "border-t-2 border-t-white/5 mt-1 pt-1 text-sm font-light text-white/60 whitespace-pre-wrap self-start"
+                      }
+                    >
+                      {loc.over}
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
-      <section className={"container mx-auto py-24 max-w-prose"}>
-        <div dangerouslySetInnerHTML={{ __html: organisation.content }} />
-      </section>
+      <main className={"container mx-auto my-12 max-w-screen-sm"}>
+        {organisation.content && (
+          <div dangerouslySetInnerHTML={{ __html: organisation.content }} />
+        )}
+      </main>
       <Footer />
     </>
   );

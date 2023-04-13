@@ -12,16 +12,19 @@ nav a{
     @apply text-base;
 }
 
-.underline_animated{
+.underline_animated, main a, header.locatie a{
     @apply relative;
 }
 
-.underline_animated:after{
+.underline_animated:after, main a:after, header.locatie a:after{
     @apply block w-0 bg-current absolute top-[90%] right-0 left-auto transition-all duration-300;
     height:1px;
     content: "";
 }
-.underline_animated:hover, .underline_animated.underline_animated_active{
+main a:after{
+    @apply top-full;
+}
+.underline_animated:hover, main a:hover, .underline_animated.underline_animated_active, header.locatie a:hover{
     @apply after:left-0 after:right-auto after:w-full;
 }
 
@@ -50,4 +53,19 @@ h5{
 
 footer a{
     @apply underline underline-offset-4 font-medium tracking-wider transition-colors hover:text-rose-400;
+}
+main a{
+    @apply text-rose-400 transition-colors hover:text-rose-500;
+}
+main p{
+    @apply mb-3;
+}
+main h1, main h2, main h3, main h4, main h5{
+    @apply mb-3 mt-8;
+}
+main h3{
+    @apply lg:text-2xl text-blue-gray font-medium tracking-wider;
+}
+main img{
+    @apply rounded-lg;
 }
