@@ -35,12 +35,14 @@ export async function getStaticProps() {
   });
   //   Get addresses and long lat coordinates from Nominatim
   const addressesJSON = await getNomatimAddresses(data.organisations.nodes);
+  const addressesObj = Object.fromEntries(addressesJSON);
+  // console.log(addressesObj);
   // let addressesJSON;
 
   return {
     props: {
       organisations: data.organisations,
-      addresses: addressesJSON ? Object.fromEntries(addressesJSON) : null,
+      addresses: addressesObj ? addressesObj : null,
     },
   };
 }

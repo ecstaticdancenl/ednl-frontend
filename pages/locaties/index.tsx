@@ -39,7 +39,7 @@ export async function getStaticProps() {
   return {
     props: {
       organisations: data.organisations,
-      addresses: Object.fromEntries(addressesJSON),
+      // addresses: addressesJSON ? Object.fromEntries(addressesJSON) : null,
     },
   };
 }

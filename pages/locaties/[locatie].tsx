@@ -50,7 +50,7 @@ export async function getStaticProps({ params }: any) {
     props: {
       locatie: params.locatie,
       organisation: data.organisation,
-      addresses: addressesJSON ? Object.fromEntries(addressesJSON) : null,
+      // addresses: addressesJSON ? Object.fromEntries(addressesJSON) : null,
     },
   };
 }
@@ -135,7 +135,7 @@ export default function Locatie({ organisation, addresses }: AppProps) {
       <div className={"my-8 flex flex-col items-center mx-auto relative z-10"}>
         <Label>
           Locatie
-          {organisation.acfOrganisatieGegevens.locaties.length > 1 && "s"}
+          {organisation.acfOrganisatieGegevens.locaties?.length > 1 && "s"}
         </Label>
         <div
           className={
