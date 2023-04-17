@@ -34,44 +34,49 @@ export function Navigation() {
   return (
     <div
       className={[
-        "transition-all duration-250 sticky top-0 flex justify-between items-center relative z-50 lg:px-10 px-6",
-        scrolled
-          ? "backdrop-filter backdrop-blur-sm bg-slate-900/30 py-2 mb-[44px]"
-          : "lg:py-8 py-5 mb-0",
+        "w-full fixed top-0 left-0 z-50",
+        scrolled ? "backdrop-blur-md bg-slate-900/20" : "backdrop-blur-none",
       ].join(" ")}
     >
-      <Link
-        href={"/"}
+      <div
         className={[
-          "z-20 underline_animated uppercase tracking-very-wide font-bold transition-all duration-250",
-          scrolled ? "text-sm" : "sm:text-lg text-base",
+          "max-w-screen-2xl mx-auto transition-height duration-500 flex justify-between items-center z-50 lg:px-10 px-6",
+          scrolled ? "h-12 py-2" : "md:h-24 h-16 mb-0",
         ].join(" ")}
       >
-        Ecstatic Dance <span className={"font-normal text-sm"}>.nl</span>
-      </Link>
+        <Link
+          href={"/"}
+          className={[
+            "z-20 underline_animated uppercase tracking-very-wide font-bold transition-all duration-500",
+            scrolled ? "text-sm" : "sm:text-lg text-base",
+          ].join(" ")}
+        >
+          Ecstatic Dance <span className={"font-normal text-sm"}>.nl</span>
+        </Link>
 
-      <AnimatePresence>
-        {(isMD || (!isMD && isOpen)) && (
-          <motion.nav
-            initial={{ opacity: 0, y: -200 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -200 }}
-            className={
-              "absolute md:relative z-10 md:w-auto w-full md:bg-transparent bg-blue-950 left-0 top-0 md:h-auto h-screen lg:gap-8 gap-4 tracking-wider flex md:flex-row flex-col justify-center items-center"
-            }
-          >
-            {!isMD && <NavItem href={"/"}>Home</NavItem>}
-            <NavItem href={"/over"}>Introductie</NavItem>
-            <NavItem href={"/locaties"}>Locaties</NavItem>
-            <NavItem href={"/agenda"}>Agenda</NavItem>
-          </motion.nav>
+        <AnimatePresence>
+          {(isMD || (!isMD && isOpen)) && (
+            <motion.nav
+              initial={{ opacity: 0, y: -200 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -200 }}
+              className={
+                "absolute md:relative z-10 md:w-auto w-full md:bg-transparent bg-blue-950 left-0 top-0 md:h-auto h-screen lg:gap-8 gap-4 tracking-wider flex md:flex-row flex-col justify-center items-center"
+              }
+            >
+              {!isMD && <NavItem href={"/"}>Home</NavItem>}
+              <NavItem href={"/over"}>Introductie</NavItem>
+              <NavItem href={"/locaties"}>Locaties</NavItem>
+              <NavItem href={"/agenda"}>Agenda</NavItem>
+            </motion.nav>
+          )}
+        </AnimatePresence>
+        {!isMD && (
+          <div className={"z-20 relative"}>
+            <Hamburger toggled={isOpen} toggle={setOpen} />
+          </div>
         )}
-      </AnimatePresence>
-      {!isMD && (
-        <div className={"z-20 relative"}>
-          <Hamburger toggled={isOpen} toggle={setOpen} />
-        </div>
-      )}
+      </div>
     </div>
   );
 }

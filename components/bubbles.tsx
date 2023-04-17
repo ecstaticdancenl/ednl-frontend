@@ -46,7 +46,7 @@ export function Bubbles({ flipped = false, className = "" }) {
   return (
     <section
       className={[
-        "grid top-0 w-full absolute z-0 overflow-x-clip",
+        "grid top-0 w-full absolute z-0",
         isMD ? "grid-cols-5 h-[33vw]" : "grid-cols-3 h-[50vw]",
         flipped ? "-scale-100" : "",
         className,

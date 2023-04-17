@@ -25,7 +25,7 @@ export function Locaties(props: {
   const [mapFilter, setMapFilter] = useState<string>("");
 
   useEffect(() => {
-    if (mapFilter !== "" && props.blobs) {
+    if (mapFilter !== "") {
       scrollIntoViewWithOffset("locaties", 20);
     }
   }, [mapFilter]);
@@ -60,7 +60,7 @@ export function Locaties(props: {
               }
               onClick={() => {
                 setMapFilter("");
-                if (props.blobs) scrollIntoViewWithOffset("locaties", 20);
+                scrollIntoViewWithOffset("locaties", 20);
               }}
             >
               &times;
@@ -72,11 +72,7 @@ export function Locaties(props: {
             "mt-1 w-full grid grid-cols-1 md:grid-cols-2 lg:gap-6 gap-2"
           }
         >
-          <MapWrapper
-            filter={mapFilter}
-            addresses={props.addresses}
-            organisations={props.organisations}
-          />
+          <MapWrapper filter={mapFilter} addresses={props.addresses} />
           <OrgList organisations={props.organisations} mapFilter={mapFilter} />
         </div>
       </section>

@@ -18,7 +18,22 @@ import { platformModifierKeyOnly } from "ol/events/condition.js";
 import { isBrowser, isMobile } from "react-device-detect";
 import { createEmpty, extend } from "ol/extent";
 
-export function MapWrapper({ filter = "", addresses, organisations }) {
+function zoomToExtent(map) {
+  if (map && map.getView && source.getFeatures().length > 0)
+    map.getView().fit(source.getExtent(), {
+      padding: [100, 100, 100, 100],
+      maxZoom: 13,
+      duration: 1000,
+    });
+  return null;
+}
+
+export function MapWrapper({
+  filter = "",
+  addresses,
+  customExtent = false,
+  className = "md:sticky md:top-16 md:h-[calc(100vh-225px)] h-[50vh]",
+}) {
   const [map, setMap] = useState({});
   const mapElement = useRef();
   const debouncedFilter = useDebounce(filter, 500);
@@ -54,12 +69,11 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
   }, [filter]);
 
   useEffect(() => {
-    if (map && map.getView && source.getFeatures().length > 0)
-      map.getView().fit(source.getExtent(), {
-        padding: [150, 150, 150, 150],
-        maxZoom: 13,
-        duration: 1000,
-      });
+    if (customExtent) zoomToExtent(map);
+  }, [map]);
+
+  useEffect(() => {
+    zoomToExtent(map);
   }, [debouncedFilter]);
 
   useEffect(() => {
@@ -132,9 +146,7 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
   }, []);
 
   return (
-    <div
-      className={"md:sticky md:top-16 md:h-[calc(100vh-225px)] h-[50vh] w-full"}
-    >
+    <div className={[className, "w-full mb-6 md:mb-0 relative"].join(" ")}>
       <div
         // style={{ height: "calc(100vh - 90px)", width: "100%" }}
         style={{ maxHeight: "800px" }}
@@ -142,7 +154,11 @@ export function MapWrapper({ filter = "", addresses, organisations }) {
         className="map-container w-full h-full rounded-md overflow-clip bg-white/80"
       />
       {mobile && (
-        <p className={"text-center text-xs opacity-50 mb-4 absolute top-full"}>
+        <p
+          className={
+            "text-center text-xs opacity-50 mb-4 absolute top-full w-full"
+          }
+        >
           Gebruik 2 vingers om kaart te verplaatsen
         </p>
       )}

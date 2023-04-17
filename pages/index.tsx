@@ -6,10 +6,9 @@ import { Bubbles } from "@/components/bubbles";
 import { HomeImages } from "@/components/homeImages";
 import { HomeIntroductie } from "@/components/homeIntroductie";
 import { HomeHeader } from "@/components/homeHeader";
-import { useState } from "react";
 import { Footer } from "@/components/footer";
 import { Locaties } from "@/components/locaties";
-import { getNomatimAddresses } from "@/lib/getNomatimAddresses";
+import { getAddresses } from "@/lib/getAddressesFromAPI";
 
 export async function getStaticProps() {
   //    Get data from WordPress
@@ -33,16 +32,13 @@ export async function getStaticProps() {
       }
     `,
   });
-  //   Get addresses and long lat coordinates from Nominatim
-  const addressesJSON = await getNomatimAddresses(data.organisations.nodes);
-  const addressesObj = Object.fromEntries(addressesJSON);
-  // console.log(addressesObj);
-  // let addressesJSON;
+  //   Get addresses and long lat coordinates from external GEO API
+  const addresses = await getAddresses(data.organisations.nodes);
 
   return {
     props: {
       organisations: data.organisations,
-      addresses: addressesObj ? addressesObj : null,
+      addresses: addresses,
     },
   };
 }
@@ -70,7 +66,6 @@ export default function Home({ organisations, addresses }: AppProps) {
       <HomeHeader />
       <HomeImages />
       <HomeIntroductie />
-
       <Locaties blobs addresses={addresses} organisations={organisations} />
       <Footer />
     </>

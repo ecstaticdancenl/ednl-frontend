@@ -1,6 +1,6 @@
 import client from "@/apollo-client";
 import { gql } from "@apollo/client";
-import { getNomatimAddresses } from "@/lib/getNomatimAddresses";
+import { getAddresses, getAddressesFromAPI } from "@/lib/getAddressesFromAPI";
 import { useState } from "react";
 import Head from "next/head";
 import { Navigation } from "@/components/navigation";
@@ -33,13 +33,13 @@ export async function getStaticProps() {
       }
     `,
   });
-  //   Get addresses and long lat coordinates from Nominatim
-  const addressesJSON = await getNomatimAddresses(data.organisations.nodes);
+  //   Get addresses and long lat coordinates from external GEO API
+  const addresses = await getAddresses(data.organisations.nodes);
 
   return {
     props: {
       organisations: data.organisations,
-      // addresses: addressesJSON ? Object.fromEntries(addressesJSON) : null,
+      addresses: addresses,
     },
   };
 }
@@ -51,7 +51,6 @@ type AppProps = {
 };
 
 export default function LocatiesIndex({ organisations, addresses }: AppProps) {
-  const [mapFilter, setMapFilter] = useState<string>("");
   return (
     <>
       <Head>

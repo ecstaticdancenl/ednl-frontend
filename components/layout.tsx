@@ -1,7 +1,29 @@
+import Head from "next/head";
+import Script from "next/script";
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_MEASUREMENT_ID;
+
 export default function Layout({ children }: { children: any }) {
   return (
     <>
-      <div className={"bg-blue-950 text-white min-h-screen"}>{children}</div>
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){window.dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+      </Script>
+      <div
+        className={
+          "md:pt-24 pt-16 flex flex-col text-white min-h-screen max-w-screen-2xl mx-auto relative"
+        }
+      >
+        {children}
+      </div>
     </>
   );
 }

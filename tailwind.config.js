@@ -9,6 +9,10 @@ module.exports = {
       sans: ["var(--outfit-font)", "sans-serif"],
     },
     extend: {
+      transitionProperty: {
+        height: "height",
+        spacing: "margin, padding",
+      },
       fontSize: {
         xxs: "0.625rem",
       },

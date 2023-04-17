@@ -6,7 +6,10 @@
     @apply bg-amber-500 text-slate-100;
 }
 body, html{
-    @apply text-lg;
+    @apply text-lg bg-blue-950;
+}
+body > div{
+    @apply  overflow-x-clip w-full;
 }
 nav a{
     @apply text-base;
@@ -35,8 +38,14 @@ header, section, main{
 p{
     /*@apply leading-snug;*/
 }
+p.has-large-font-size{
+    @apply text-xl;
+}
+p.has-text-align-center{
+    @apply text-center;
+}
 h1{
-    @apply tracking-widest font-bold sm:text-5xl text-4xl;
+    @apply md:tracking-widest tracking-wider font-bold md:text-5xl sm:text-4xl text-3xl;
 }
 h2{
     @apply text-2xl md:text-3xl lg:text-4xl md:leading-snug leading-snug;
@@ -67,5 +76,27 @@ main h3{
     @apply lg:text-2xl text-blue-gray font-medium tracking-wider;
 }
 main img{
-    @apply rounded-lg;
+    @apply rounded-lg shadow-md;
+}
+main figure{
+    @apply mb-6 mt-8;
+}
+main .wp-block-embed{
+    @apply w-full relative aspect-video;
+}
+main .wp-block-embed .wp-block-embed__wrapper{
+    @apply top-0 left-0 w-full h-full rounded-lg overflow-clip shadow-md;
+}
+main .wp-block-embed iframe{
+    @apply w-full h-full;
+}
+main figcaption{
+    @apply text-sm text-blue-gray tracking-wider text-right;
+}
+
+main ul{
+    @apply list-disc list-inside my-3;
+}
+main ol{
+    @apply list-decimal list-inside my-3;
 }

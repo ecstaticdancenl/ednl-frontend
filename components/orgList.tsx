@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Organisation } from "@/types/organisation";
 import { getHighlightedText } from "@/components/highlightText";
 import basepath from "@/lib/basepath";
+import MarkerIcon from "@/components/markerIcon";
 
 type OrgListProps = {
   organisations: { nodes: [] };
@@ -43,11 +44,7 @@ export function OrgList({ organisations, mapFilter }: OrgListProps) {
                     className={"text-sm px-2 flex gap-2 items-start"}
                     key={loc.naam}
                   >
-                    <img
-                      src={basepath + "/marker_light.svg"}
-                      className={"opacity-50"}
-                      alt=""
-                    />
+                    <MarkerIcon className={"opacity-25 text-white"} />
                     <div className={"flex flex-col gap-1"}>
                       <p>{getHighlightedText(loc.naam, mapFilter)}</p>
                       <p

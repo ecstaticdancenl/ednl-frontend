@@ -1,6 +1,6 @@
 export function HomeHeader() {
   return (
-    <header className={"text-center sm:my-12 my-1 mx-5 pointer-events-none"}>
+    <header className={"text-center sm:py-12 py-1 mx-5 pointer-events-none"}>
       <h1 className={"flex flex-col items-center font-medium tracking-widest"}>
         <span
           className={

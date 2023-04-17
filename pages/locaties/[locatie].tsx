@@ -1,18 +1,17 @@
 import client from "@/apollo-client";
 import { gql } from "@apollo/client";
-import { getNomatimAddresses } from "@/lib/getNomatimAddresses";
+import { getAddresses, getCachedAddresses } from "@/lib/getAddressesFromAPI";
 import Head from "next/head";
 import { Navigation } from "@/components/navigation";
 import { Bubbles } from "@/components/bubbles";
-import { HomeHeader } from "@/components/homeHeader";
-import { HomeImages } from "@/components/homeImages";
-import { HomeIntroductie } from "@/components/homeIntroductie";
-import { Locaties } from "@/components/locaties";
 import { Footer } from "@/components/footer";
 import { Organisation } from "@/types/organisation";
 import basepath from "@/lib/basepath";
-import { getHighlightedText } from "@/components/highlightText";
 import { Label } from "@/components/label";
+import { OrgHeader } from "@/components/orgHeader";
+import { MapWrapper } from "@/components/mapWrapper";
+import { Address } from "@/types/address";
+import ExtURL from "@/components/extURL";
 
 export async function getStaticProps({ params }: any) {
   //    Get data from WordPress
@@ -42,15 +41,16 @@ export async function getStaticProps({ params }: any) {
       }
     `,
   });
-  //   Get addresses and long lat coordinates from Nominatim
-  // const addressesJSON = await getNomatimAddresses([data.organisation]);
-  let addressesJSON;
+
+  //   Get addresses and long lat coordinates from external GEO API
+  // const addresses = await getCachedAddresses();
+  const addresses = await getAddresses([data.organisation]);
 
   return {
     props: {
       locatie: params.locatie,
       organisation: data.organisation,
-      // addresses: addressesJSON ? Object.fromEntries(addressesJSON) : null,
+      addresses: addresses,
     },
   };
 }
@@ -80,25 +80,15 @@ export async function getStaticPaths() {
 type AppProps = {
   className: string;
   organisation: Organisation;
-  addresses: [];
+  addresses: { [key: string]: Address };
 };
 
-function niceURL(url: string) {
-  let cleanURL = url
-    .replace("http://", "")
-    .replace("https://", "")
-    .replace("www.", "");
-  if (cleanURL.endsWith("/")) {
-    cleanURL = cleanURL.slice(0, -1);
-  }
-  return cleanURL;
-}
-
 export default function Locatie({ organisation, addresses }: AppProps) {
+  const pageTitle = `${organisation.title} | Ecstatic Dance in Nederland`;
   return (
     <>
       <Head>
-        <title>{organisation.title} | Ecstatic Dance in Nederland</title>
+        <title>{pageTitle}</title>
         <meta
           name="description"
           content="Een vrije dansvorm op blote voeten zonder woorden, alcohol of drugs"
@@ -108,84 +98,85 @@ export default function Locatie({ organisation, addresses }: AppProps) {
       </Head>
       <Navigation />
       <Bubbles />
-      <header className="locatie relative h-[50vh] z-10 mx-10">
-        {organisation.featuredImage && (
-          <img
-            className={"object-cover w-full h-full absolute rounded-2xl"}
-            src={organisation.featuredImage.node.sourceUrl}
-            alt=""
-          />
-        )}
-        <div
-          className={
-            "rounded-2xl bg-blue-900/30 relative z-10 w-full h-full flex flex-col items-center justify-center text-center"
-          }
-        >
-          <h1>{organisation.title}</h1>
-          {organisation.acfOrganisatieGegevens.website && (
-            <a
-              target={"_blank"}
-              href={organisation.acfOrganisatieGegevens.website}
-            >
-              {niceURL(organisation.acfOrganisatieGegevens.website)}
-            </a>
-          )}
-        </div>
-      </header>
-      <div className={"my-8 flex flex-col items-center mx-auto relative z-10"}>
-        <Label>
-          Locatie
-          {organisation.acfOrganisatieGegevens.locaties?.length > 1 && "s"}
-        </Label>
-        <div
-          className={
-            "grid grid-cols-4 mt-2 text-left max-w-screen-sm w-full gap-2"
-          }
-        >
-          {!organisation.acfOrganisatieGegevens.locaties && (
-            <p className={"text-sm"}>Op dit moment geen locatie</p>
-          )}
-          {organisation.acfOrganisatieGegevens.locaties?.map((loc: any) => {
-            return (
-              <div
-                className={[
-                  organisation.acfOrganisatieGegevens.locaties.length === 1
-                    ? "col-start-2"
-                    : "",
-                  "text-base p-3 rounded-md flex gap-2 items-start bg-white/5 col-span-2",
-                ].join(" ")}
-                key={loc.naam}
-              >
-                <img src={basepath + "/marker_light.svg"} alt="" />
-                <div className={"flex flex-col gap-1"}>
-                  <p>{loc.naam}</p>
-                  <p
+      <OrgHeader organisation={organisation} />
+      <div
+        className={
+          "grid grid-cols-1 lg:grid-cols-3 lg:gap-8 my-10 lg:mx-10 mx-6 gap-y-8"
+        }
+      >
+        <div className={"lg:sticky top-12 self-start lg:mb-6"}>
+          <Label className={"mb-4"}>
+            Locatie
+            {organisation.acfOrganisatieGegevens.locaties?.length > 1 && "s"}
+          </Label>
+          <div
+            className={
+              "gap-2 mb-2 flex lg:flex-col sm:flex-row flex-col justify-center lg:items-center items-stretch md:items-start mx-auto relative z-10"
+            }
+          >
+            {!organisation.acfOrganisatieGegevens.locaties && (
+              <p className={"text-sm"}>Op dit moment geen locatie</p>
+            )}
+            {organisation.acfOrganisatieGegevens.locaties?.map((loc: any) => {
+              return (
+                <a
+                  href={`https://www.google.com/maps/search/${loc.adres}`}
+                  target={"_blank"}
+                  rel={"noreferrer"}
+                  className={[
+                    "w-full text-base p-3 rounded-md flex gap-2 items-start bg-white/5 hover:bg-white/20 transition-colors col-span-2 relative group",
+                  ].join(" ")}
+                  key={loc.naam}
+                >
+                  <div
                     className={
-                      "text-sm font-light text-white/60 whitespace-pre-wrap"
+                      "flex items-center gap-1 absolute right-4 top-3.5 group-hover:opacity-60 opacity-0 transition-opacity text-sm"
                     }
                   >
-                    {loc.adres}
-                  </p>
-                  {loc.over && (
+                    <span>Navigeer</span>
+                    <ExtURL className={"w-3 h-3"} />
+                  </div>
+                  <img src={basepath + "/marker_light.svg"} alt="" />
+                  <div className={"flex flex-col gap-1"}>
+                    <p>{loc.naam}</p>
                     <p
                       className={
-                        "border-t-2 border-t-white/5 mt-1 pt-1 text-sm font-light text-white/60 whitespace-pre-wrap self-start"
+                        "text-sm font-light text-white/60 whitespace-pre-wrap"
                       }
                     >
-                      {loc.over}
+                      {loc.adres}
                     </p>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+                    {loc.over && (
+                      <p
+                        className={
+                          "text-xs font-light text-white/40 whitespace-pre-wrap self-start"
+                        }
+                      >
+                        {loc.over}
+                      </p>
+                    )}
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+          <MapWrapper
+            addresses={[addresses[organisation.id]]}
+            customExtent
+            className={"lg:h-96 h-72 col-span-2"}
+          />
         </div>
+        <main className={"col-span-2"}>
+          <Label>Over {organisation.title}</Label>
+          {organisation.content && (
+            <div dangerouslySetInnerHTML={{ __html: organisation.content }} />
+          )}
+          {!organisation.content && (
+            <p className={"text-sm"}>Op dit moment geen informatie</p>
+          )}
+        </main>
       </div>
-      <main className={"container mx-auto my-12 max-w-screen-sm"}>
-        {organisation.content && (
-          <div dangerouslySetInnerHTML={{ __html: organisation.content }} />
-        )}
-      </main>
+
       <Footer />
     </>
   );
