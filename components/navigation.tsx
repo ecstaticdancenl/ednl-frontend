@@ -57,9 +57,10 @@ export function Navigation() {
         <AnimatePresence>
           {(isMD || (!isMD && isOpen)) && (
             <motion.nav
-              initial={{ opacity: 0, y: -200 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -200 }}
+              key={"nav"}
+              initial={!isMD ? { opacity: 0, y: -200 } : {}}
+              animate={!isMD ? { opacity: 1, y: 0 } : {}}
+              exit={!isMD ? { opacity: 0, y: -200 } : {}}
               className={
                 "absolute md:relative z-10 md:w-auto w-full md:bg-transparent bg-blue-950 left-0 top-0 md:h-auto h-screen lg:gap-8 gap-4 tracking-wider flex md:flex-row flex-col justify-center items-center"
               }

@@ -36,7 +36,7 @@ header, section, main{
 }
 
 p{
-    /*@apply leading-snug;*/
+    @apply md:text-lg text-base;
 }
 p.has-large-font-size{
     @apply text-xl;

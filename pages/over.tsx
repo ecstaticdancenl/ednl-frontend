@@ -58,7 +58,7 @@ export default function Over({ page }: { page: any }) {
         <Label>Introductie</Label>
         <h2 className="mt-1">{page.title}</h2>
       </header>
-      <main className={"max-w-screen-sm mx-auto md:mb-32 mb-16"}>
+      <main className={"px-6 md:px-0 max-w-screen-sm mx-auto md:mb-32 mb-16"}>
         {page.content && (
           <div dangerouslySetInnerHTML={{ __html: page.content }} />
         )}
