@@ -34,7 +34,14 @@ export function OrgList({ organisations, mapFilter }: OrgListProps) {
             }
           >
             <h4 className={"mb-1.5"}>{org.title}</h4>
-            <div className={"my-0.5 grid sm:grid-cols-2 grid-cols-1 gap-2"}>
+            <div
+              className={[
+                org.acfOrganisatieGegevens.locaties?.length === 1
+                  ? "grid-cols-1"
+                  : "sm:grid-cols-2 grid-cols-1",
+                "my-0.5 grid gap-2",
+              ].join(" ")}
+            >
               {!org.acfOrganisatieGegevens.locaties && (
                 <p className={"text-sm"}>Op dit moment geen locatie</p>
               )}

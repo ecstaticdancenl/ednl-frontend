@@ -17,7 +17,15 @@ export async function getStaticProps({ params }: any) {
   //    Get data from WordPress
   const { data } = await client.query({
     query: gql`
-      query {
+      query{
+         organisatieAfbeeldingen {
+          organisatieAfbeeldingen {
+            afbeeldingen {
+              id
+              sourceUrl(size: LARGE)
+            }
+          }
+        }
         organisation(id: "${params.locatie}", idType: SLUG) {
           id
           title
@@ -44,13 +52,17 @@ export async function getStaticProps({ params }: any) {
 
   //   Get addresses and long lat coordinates from external GEO API
   // const addresses = await getCachedAddresses();
-  const addresses = await getAddresses([data.organisation]);
-
+  const addresses = await getAddresses(
+    [data.organisation],
+    process.env.NODE_ENV === "development" ? false : true
+  );
   return {
     props: {
       locatie: params.locatie,
       organisation: data.organisation,
       addresses: addresses,
+      defaultImages:
+        data.organisatieAfbeeldingen.organisatieAfbeeldingen.afbeeldingen,
     },
   };
 }
@@ -81,9 +93,14 @@ type AppProps = {
   className: string;
   organisation: Organisation;
   addresses: { [key: string]: Address };
+  defaultImages: any;
 };
 
-export default function Locatie({ organisation, addresses }: AppProps) {
+export default function Locatie({
+  organisation,
+  addresses,
+  defaultImages,
+}: AppProps) {
   const pageTitle = `${organisation.title} | Ecstatic Dance in Nederland`;
   return (
     <>
@@ -98,7 +115,7 @@ export default function Locatie({ organisation, addresses }: AppProps) {
       </Head>
       <Navigation />
       <Bubbles />
-      <OrgHeader organisation={organisation} />
+      <OrgHeader defaultImages={defaultImages} organisation={organisation} />
       <div
         className={
           "grid grid-cols-1 lg:grid-cols-3 lg:gap-8 my-10 lg:mx-10 mx-6 gap-y-8"
@@ -120,7 +137,10 @@ export default function Locatie({ organisation, addresses }: AppProps) {
             {organisation.acfOrganisatieGegevens.locaties?.map((loc: any) => {
               return (
                 <a
-                  href={`https://www.google.com/maps/search/${loc.adres}`}
+                  href={`https://www.google.com/maps/search/${loc.adres.replaceAll(
+                    /\r|\n/g,
+                    "%20"
+                  )}`}
                   target={"_blank"}
                   rel={"noreferrer"}
                   className={[

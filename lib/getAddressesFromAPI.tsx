@@ -13,16 +13,18 @@ const queryPath = "https://geocode.maps.co/search?q=";
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms)); // Define a delay function that returns a Promise that resolves after the given delay in milliseconds.
 
-export async function getAddresses(organisations: Organisation[]) {
-  // console.log("is development: " + process.env.NODE_ENV);
+export async function getAddresses(
+  organisations: Organisation[],
+  useCache = true
+) {
   const cache = require("memory-cache");
   const addressesCache = cache.get("addresses");
   let addressesObj;
-  if (!addressesCache) {
+  if (!addressesCache || !useCache) {
     console.log("no cache, fetchin results");
     const addressesJSON = await getAddressesFromAPI(organisations);
     addressesObj = Object.fromEntries(addressesJSON);
-    cache.put("addresses", addressesObj, 1000 * 60 * 30);
+    if (useCache) cache.put("addresses", addressesObj, 1000 * 60 * 30);
   } else {
     console.log("using cached data");
     addressesObj = addressesCache;
@@ -50,7 +52,7 @@ export async function getAddressesFromAPI(organisations: Organisation[]) {
     const orgAddresses = [];
 
     // If there are no locations, return an empty array
-    if (!org.acfOrganisatieGegevens.locaties) continue;
+    if (!org?.acfOrganisatieGegevens?.locaties) continue;
 
     // Check if there are multiple locations
     const hasMultipleLocations = org.acfOrganisatieGegevens.locaties.length > 1;
