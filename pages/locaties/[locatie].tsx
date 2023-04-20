@@ -18,14 +18,6 @@ export async function getStaticProps({ params }: any) {
   const { data } = await client.query({
     query: gql`
       query{
-         organisatieAfbeeldingen {
-          organisatieAfbeeldingen {
-            afbeeldingen {
-              id
-              sourceUrl(size: LARGE)
-            }
-          }
-        }
         organisation(id: "${params.locatie}", idType: SLUG) {
           id
           title
@@ -61,8 +53,6 @@ export async function getStaticProps({ params }: any) {
       locatie: params.locatie,
       organisation: data.organisation,
       addresses: addresses,
-      defaultImages:
-        data.organisatieAfbeeldingen.organisatieAfbeeldingen.afbeeldingen,
     },
   };
 }
@@ -99,11 +89,7 @@ type AppProps = {
   defaultImages: any;
 };
 
-export default function Locatie({
-  organisation,
-  addresses,
-  defaultImages,
-}: AppProps) {
+export default function Locatie({ organisation, addresses }: AppProps) {
   const pageTitle = `${organisation.title} | Ecstatic Dance in Nederland`;
   return (
     <>
@@ -118,7 +104,7 @@ export default function Locatie({
       </Head>
       <Navigation />
       <Bubbles />
-      <OrgHeader defaultImages={defaultImages} organisation={organisation} />
+      <OrgHeader organisation={organisation} />
       <div
         className={
           "grid grid-cols-1 lg:grid-cols-3 lg:gap-8 my-10 lg:mx-10 mx-6 gap-y-8"

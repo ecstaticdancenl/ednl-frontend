@@ -3,25 +3,12 @@ import { Organisation } from "@/types/organisation";
 import WebsiteIcon from "@/components/websiteIcon";
 import EmailIcon from "@/components/emailIcon";
 
-export function OrgHeader({
-  organisation,
-  defaultImages,
-}: {
-  defaultImages: any;
-  organisation: Organisation;
-}) {
+export function OrgHeader({ organisation }: { organisation: Organisation }) {
   return (
     <header
       className="locatie relative z-10 lg:mx-10 mx-6"
       style={{ height: "50vh", maxHeight: "350px" }}
     >
-      {!organisation.featuredImage && (
-        <img
-          className={"object-cover w-full h-full absolute rounded-2xl"}
-          src={defaultImages[Math.floor(Math.random() * 3)].sourceUrl}
-          alt={"Ecstatic Dance"}
-        />
-      )}
       {organisation.featuredImage && (
         <img
           className={"object-cover w-full h-full absolute rounded-2xl"}
