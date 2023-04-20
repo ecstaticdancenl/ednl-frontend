@@ -90,7 +90,7 @@ export async function getStaticPaths() {
 }
 
 type AppProps = {
-  className: string;
+  className?: string;
   organisation: Organisation;
   addresses: { [key: string]: Address };
   defaultImages: any;
