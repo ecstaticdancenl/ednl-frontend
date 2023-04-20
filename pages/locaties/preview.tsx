@@ -76,13 +76,14 @@ const defaultOptions = {
 };
 
 export default function Preview() {
-  const [data, setData] = useState<AppProps>();
-  const router = useRouter();
-  const slug = router.query?.slug;
+  const [data, setData] = useState<AppProps | null>(null);
 
   useEffect(() => {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const { slug } = Object.fromEntries(urlSearchParams.entries());
+    console.log(slug);
+
     if (slug) {
-      console.log("slug: " + slug);
       getDynamicProps("" + slug).then((data) => {
         setData(data);
       });

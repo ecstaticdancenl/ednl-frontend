@@ -71,7 +71,10 @@ export async function getStaticPaths() {
   const { data } = await client.query({
     query: gql`
       query {
-        organisations(where: { orderby: { field: TITLE, order: ASC } }) {
+        organisations(
+          first: 50
+          where: { orderby: { field: TITLE, order: ASC } }
+        ) {
           nodes {
             id
             title
