@@ -78,12 +78,15 @@ const defaultOptions = {
 export default function Preview() {
   const [data, setData] = useState<AppProps>();
   const router = useRouter();
-  const { slug } = router.query;
+  const slug = router.query?.slug;
 
   useEffect(() => {
-    getDynamicProps("" + slug).then((data) => {
-      setData(data);
-    });
+    if (slug) {
+      console.log("slug: " + slug);
+      getDynamicProps("" + slug).then((data) => {
+        setData(data);
+      });
+    }
   }, []);
 
   useEffect(() => {
