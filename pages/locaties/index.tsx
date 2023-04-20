@@ -1,15 +1,12 @@
 import client from "@/apollo-client";
 import { gql } from "@apollo/client";
-import { getAddresses, getAddressesFromAPI } from "@/lib/getAddressesFromAPI";
-import { useState } from "react";
+import { getAddresses } from "@/lib/getAddressesFromAPI";
 import Head from "next/head";
 import { Navigation } from "@/components/navigation";
 import { Bubbles } from "@/components/bubbles";
-import { HomeHeader } from "@/components/homeHeader";
-import { HomeImages } from "@/components/homeImages";
-import { HomeIntroductie } from "@/components/homeIntroductie";
 import { Locaties } from "@/components/locaties";
 import { Footer } from "@/components/footer";
+import limit from "@/lib/limit";
 
 export async function getStaticProps() {
   //    Get data from WordPress
@@ -17,7 +14,7 @@ export async function getStaticProps() {
     query: gql`
       query {
         organisations(
-          first: 50
+          first: ${limit}
           where: { orderby: { field: TITLE, order: ASC } }
         ) {
           nodes {
@@ -37,7 +34,15 @@ export async function getStaticProps() {
     `,
   });
   //   Get addresses and long lat coordinates from external GEO API
-  const addresses = await getAddresses(data.organisations.nodes);
+  const start = Date.now();
+  console.log(`locaties/index.tsx`);
+  const addresses = await getAddresses(
+    data.organisations.nodes,
+    false,
+    data.organisations.nodes.length * 1000 * 2
+  );
+  const millis = Date.now() - start;
+  console.log(`locaties/index.tsx: ${millis}ms`);
 
   return {
     props: {

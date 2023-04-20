@@ -12,12 +12,21 @@ import { OrgHeader } from "@/components/orgHeader";
 import { MapWrapper } from "@/components/mapWrapper";
 import { Address } from "@/types/address";
 import ExtURL from "@/components/extURL";
+import limit from "@/lib/limit";
 
 export async function getStaticProps({ params }: any) {
   //    Get data from WordPress
   const { data } = await client.query({
     query: gql`
       query{
+        organisations(
+          first: ${limit}
+          where: { orderby: { field: TITLE, order: ASC } }
+        ) {
+          nodes {
+            id
+          }
+        }
         organisation(id: "${params.locatie}", idType: SLUG) {
           id
           title
@@ -43,11 +52,11 @@ export async function getStaticProps({ params }: any) {
   });
 
   //   Get addresses and long lat coordinates from external GEO API
-  // const addresses = await getCachedAddresses();
-  const addresses = await getAddresses(
-    [data.organisation],
-    process.env.NODE_ENV === "development" ? false : true
-  );
+  const start = Date.now();
+  console.log(`[Locatie].tsx ${params.locatie}`);
+  const addresses = await getAddresses([data.organisation], false, 0);
+  const millis = Date.now() - start;
+  console.log(`[Locatie].tsx ${params.locatie}: ${millis}ms`);
   return {
     props: {
       locatie: params.locatie,
@@ -62,7 +71,7 @@ export async function getStaticPaths() {
     query: gql`
       query {
         organisations(
-          first: 50
+          first: ${limit}
           where: { orderby: { field: TITLE, order: ASC } }
         ) {
           nodes {

@@ -15,13 +15,14 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function getAddresses(
   organisations: Organisation[],
-  useCache = true
+  useCache = true,
+  delayTime = 0
 ) {
+  await delay(delayTime);
   const cache = require("memory-cache");
   const addressesCache = cache.get("addresses");
   let addressesObj;
-  if (!addressesCache || !useCache) {
-    console.log("no cache, fetchin results");
+  if (!addressesCache) {
     const addressesJSON = await getAddressesFromAPI(organisations);
     addressesObj = Object.fromEntries(addressesJSON);
     if (useCache) cache.put("addresses", addressesObj, 1000 * 60 * 30);
@@ -64,8 +65,8 @@ export async function getAddressesFromAPI(organisations: Organisation[]) {
         .replace(/\b\d{4}\s?[a-zA-Z]{2}\b/, (match) => {
           return match.replace(/\s/g, "");
         });
-      console.log("fetching " + i + ": " + org.title);
-      console.log(`${queryPath}${adres}`);
+      console.log("F " + i + ": " + org.title);
+      // console.log(`${queryPath}${adres}`);
       const res = await fetch(`${queryPath}${adres}`);
       const json = await res.json();
       // let json: any;

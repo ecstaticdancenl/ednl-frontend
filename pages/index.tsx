@@ -9,6 +9,7 @@ import { HomeHeader } from "@/components/homeHeader";
 import { Footer } from "@/components/footer";
 import { Locaties } from "@/components/locaties";
 import { getAddresses } from "@/lib/getAddressesFromAPI";
+import limit from "@/lib/limit";
 
 export async function getStaticProps() {
   //    Get data from WordPress
@@ -16,7 +17,7 @@ export async function getStaticProps() {
     query: gql`
       query {
         organisations(
-          first: 50
+          first: ${limit}
           where: { orderby: { field: TITLE, order: ASC } }
         ) {
           nodes {
@@ -36,7 +37,15 @@ export async function getStaticProps() {
     `,
   });
   //   Get addresses and long lat coordinates from external GEO API
-  const addresses = await getAddresses(data.organisations.nodes);
+  const start = Date.now();
+  console.log(`Index.tsx`);
+  const addresses = await getAddresses(
+    data.organisations.nodes,
+    true,
+    data.organisations.nodes.length * 1000
+  );
+  const millis = Date.now() - start;
+  console.log(`Index.tsx: ${millis}ms`);
 
   return {
     props: {
