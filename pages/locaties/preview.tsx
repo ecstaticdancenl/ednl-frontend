@@ -1,29 +1,18 @@
 import client from "@/apollo-client";
 import { gql } from "@apollo/client";
-import { getAddresses } from "@/lib/getAddressesFromAPI";
+import { getAddressesFromWP } from "@/lib/getAddressesFromAPI";
 import { Organisation } from "@/types/organisation";
 import { Address } from "@/types/address";
 import { useEffect, useState } from "react";
 import Lottie from "react-lottie";
 import loading from "@/public/dancing.json";
 import Locatie from "@/pages/locaties/[locatie]";
-import { useRouter } from "next/router";
-import basepath from "@/lib/basepath";
-import WordpressLogo from "@/components/wordpressLogo";
 
 async function getDynamicProps(slug: string) {
   //    Get data from WordPress
   const { data } = await client.query({
     query: gql`
       query{
-         organisatieAfbeeldingen {
-          organisatieAfbeeldingen {
-            afbeeldingen {
-              id
-              sourceUrl(size: LARGE)
-            }
-          }
-        }
         organisation(id: "${slug}", idType: SLUG) {
           id
           title
@@ -41,6 +30,7 @@ async function getDynamicProps(slug: string) {
               naam
               adres
               over
+              lonlat
             }
           }
         }
@@ -49,23 +39,17 @@ async function getDynamicProps(slug: string) {
   });
 
   //   Get addresses and long lat coordinates from external GEO API
-  // const addresses = await getCachedAddresses();
-  const addresses = await getAddresses(
-    [data.organisation],
-    process.env.NODE_ENV === "development" ? false : true
-  );
+  const addresses = getAddressesFromWP([data.organisation]);
+
   return {
     organisation: data.organisation,
     addresses: addresses,
-    defaultImages:
-      data.organisatieAfbeeldingen.organisatieAfbeeldingen.afbeeldingen,
   };
 }
 
 type AppProps = {
   organisation: Organisation;
   addresses: { [key: string]: Address };
-  defaultImages: any;
 };
 
 const defaultOptions = {
@@ -101,11 +85,7 @@ export default function Preview() {
   if (data) {
     return (
       <>
-        <Locatie
-          organisation={data.organisation}
-          addresses={data.addresses}
-          defaultImages={data.defaultImages}
-        />
+        <Locatie organisation={data.organisation} addresses={data.addresses} />
       </>
     );
   }

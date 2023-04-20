@@ -19,7 +19,6 @@ const scrollIntoViewWithOffset = (selector: string, offset: number) => {
 
 export function Locaties(props: {
   blobs: boolean;
-  addresses: [];
   organisations: { nodes: [] };
 }) {
   const [mapFilter, setMapFilter] = useState<string>("");
@@ -72,7 +71,10 @@ export function Locaties(props: {
             "mt-1 w-full grid grid-cols-1 md:grid-cols-2 lg:gap-6 gap-2"
           }
         >
-          <MapWrapper filter={mapFilter} addresses={props.addresses} />
+          <MapWrapper
+            filter={mapFilter}
+            organisations={props.organisations.nodes}
+          />
           <OrgList organisations={props.organisations} mapFilter={mapFilter} />
         </div>
       </section>

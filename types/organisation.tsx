@@ -17,6 +17,7 @@ export interface Organisation {
         adres: string;
         adresPlain: string;
         over: string;
+        lonlat: [];
       }
     ];
   };

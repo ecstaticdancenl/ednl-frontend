@@ -8,7 +8,6 @@ import { HomeIntroductie } from "@/components/homeIntroductie";
 import { HomeHeader } from "@/components/homeHeader";
 import { Footer } from "@/components/footer";
 import { Locaties } from "@/components/locaties";
-import { getAddresses } from "@/lib/getAddressesFromAPI";
 import limit from "@/lib/limit";
 
 export async function getStaticProps() {
@@ -29,6 +28,7 @@ export async function getStaticProps() {
               locaties {
                 naam
                 adres
+                lonlat
               }
             }
           }
@@ -36,21 +36,9 @@ export async function getStaticProps() {
       }
     `,
   });
-  //   Get addresses and long lat coordinates from external GEO API
-  const start = Date.now();
-  console.log(`Index.tsx`);
-  const addresses = await getAddresses(
-    data.organisations.nodes,
-    true,
-    data.organisations.nodes.length * 1000
-  );
-  const millis = Date.now() - start;
-  console.log(`Index.tsx: ${millis}ms`);
-
   return {
     props: {
       organisations: data.organisations,
-      addresses: addresses,
     },
   };
 }
@@ -58,10 +46,9 @@ export async function getStaticProps() {
 type AppProps = {
   className: string;
   organisations: { nodes: [] };
-  addresses: [];
 };
 
-export default function Home({ organisations, addresses }: AppProps) {
+export default function Home({ organisations }: AppProps) {
   return (
     <>
       <Head>
@@ -78,7 +65,7 @@ export default function Home({ organisations, addresses }: AppProps) {
       <HomeHeader />
       <HomeImages />
       <HomeIntroductie />
-      <Locaties blobs addresses={addresses} organisations={organisations} />
+      <Locaties blobs organisations={organisations} />
       <Footer />
     </>
   );

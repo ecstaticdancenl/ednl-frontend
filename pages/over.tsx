@@ -4,7 +4,6 @@ import { Bubbles } from "@/components/bubbles";
 import { Footer } from "@/components/footer";
 import client from "@/apollo-client";
 import { gql } from "@apollo/client";
-import { getCachedAddresses } from "@/lib/getAddressesFromAPI";
 import { Label } from "@/components/label";
 
 export async function getStaticProps({ params }: any) {

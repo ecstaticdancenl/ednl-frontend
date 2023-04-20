@@ -1,6 +1,6 @@
 import client from "@/apollo-client";
 import { gql } from "@apollo/client";
-import { getAddresses, getCachedAddresses } from "@/lib/getAddressesFromAPI";
+import { getAddressesFromWP } from "@/lib/getAddressesFromAPI";
 import Head from "next/head";
 import { Navigation } from "@/components/navigation";
 import { Bubbles } from "@/components/bubbles";
@@ -19,14 +19,6 @@ export async function getStaticProps({ params }: any) {
   const { data } = await client.query({
     query: gql`
       query{
-        organisations(
-          first: ${limit}
-          where: { orderby: { field: TITLE, order: ASC } }
-        ) {
-          nodes {
-            id
-          }
-        }
         organisation(id: "${params.locatie}", idType: SLUG) {
           id
           title
@@ -44,6 +36,7 @@ export async function getStaticProps({ params }: any) {
               naam
               adres
               over
+              lonlat              
             }
           }
         }
@@ -51,12 +44,8 @@ export async function getStaticProps({ params }: any) {
     `,
   });
 
-  //   Get addresses and long lat coordinates from external GEO API
-  const start = Date.now();
-  console.log(`[Locatie].tsx ${params.locatie}`);
-  const addresses = await getAddresses([data.organisation], false, 0);
-  const millis = Date.now() - start;
-  console.log(`[Locatie].tsx ${params.locatie}: ${millis}ms`);
+  const addresses = getAddressesFromWP([data.organisation]);
+
   return {
     props: {
       locatie: params.locatie,
@@ -95,7 +84,6 @@ type AppProps = {
   className?: string;
   organisation: Organisation;
   addresses: { [key: string]: Address };
-  defaultImages: any;
 };
 
 export default function Locatie({ organisation, addresses }: AppProps) {
@@ -179,7 +167,8 @@ export default function Locatie({ organisation, addresses }: AppProps) {
             })}
           </div>
           <MapWrapper
-            addresses={[addresses[organisation.id]]}
+            organisations={[organisation]}
+            // addresses={[addresses[organisation.id]]}
             customExtent
             className={"lg:h-96 h-72 col-span-2"}
           />

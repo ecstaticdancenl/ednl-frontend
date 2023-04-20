@@ -1,6 +1,5 @@
 import client from "@/apollo-client";
 import { gql } from "@apollo/client";
-import { getAddresses } from "@/lib/getAddressesFromAPI";
 import Head from "next/head";
 import { Navigation } from "@/components/navigation";
 import { Bubbles } from "@/components/bubbles";
@@ -26,6 +25,7 @@ export async function getStaticProps() {
               locaties {
                 naam
                 adres
+                lonlat                
               }
             }
           }
@@ -33,21 +33,10 @@ export async function getStaticProps() {
       }
     `,
   });
-  //   Get addresses and long lat coordinates from external GEO API
-  const start = Date.now();
-  console.log(`locaties/index.tsx`);
-  const addresses = await getAddresses(
-    data.organisations.nodes,
-    false,
-    data.organisations.nodes.length * 1000 * 2
-  );
-  const millis = Date.now() - start;
-  console.log(`locaties/index.tsx: ${millis}ms`);
 
   return {
     props: {
       organisations: data.organisations,
-      addresses: addresses,
     },
   };
 }
@@ -55,10 +44,9 @@ export async function getStaticProps() {
 type AppProps = {
   className: string;
   organisations: { nodes: [] };
-  addresses: [];
 };
 
-export default function LocatiesIndex({ organisations, addresses }: AppProps) {
+export default function LocatiesIndex({ organisations }: AppProps) {
   return (
     <>
       <Head>
@@ -72,11 +60,7 @@ export default function LocatiesIndex({ organisations, addresses }: AppProps) {
       </Head>
       <Navigation />
       <Bubbles />
-      <Locaties
-        blobs={false}
-        addresses={addresses}
-        organisations={organisations}
-      />
+      <Locaties blobs={false} organisations={organisations} />
       <Footer />
     </>
   );

@@ -30,7 +30,7 @@ function zoomToExtent(map) {
 
 export function MapWrapper({
   filter = "",
-  addresses,
+  organisations,
   customExtent = false,
   className = "md:sticky md:top-16 md:h-[calc(100vh-225px)] h-[50vh]",
 }) {
@@ -41,25 +41,25 @@ export function MapWrapper({
 
   useEffect(() => {
     let features = [];
-    for (const organisationID in addresses) {
-      for (const address of addresses[organisationID]) {
-        if (!address?.json) continue;
-        const coordinate = fromLonLat(
-          [address.json.lon, address.json.lat],
-          "EPSG:3857"
-        );
-        const feature = new Feature(new Point(coordinate));
-        feature.set("organisation", address.organisation);
-        if (address.hasMultipleLocations) {
-          feature.set("naam", address.naam);
-        }
-        feature.set("hover", 0);
-        if (
-          address.organisation.toLowerCase().includes(filter.toLowerCase()) ||
-          address.naam.toLowerCase().includes(filter.toLowerCase()) ||
-          address.adres.toLowerCase().includes(filter.toLowerCase())
-        ) {
-          features.push(feature);
+    for (const organisation of organisations) {
+      if (organisation.acfOrganisatieGegevens.locaties) {
+        for (const address of organisation.acfOrganisatieGegevens.locaties) {
+          if (!address?.lonlat) continue;
+          const lonlat = JSON.parse(address.lonlat);
+          const coordinate = fromLonLat([lonlat[0], lonlat[1]], "EPSG:3857");
+          const feature = new Feature(new Point(coordinate));
+          feature.set("organisation", address.organisation);
+          if (address.hasMultipleLocations) {
+            feature.set("naam", address.naam);
+          }
+          feature.set("hover", 0);
+          if (
+            organisation.title.toLowerCase().includes(filter.toLowerCase()) ||
+            address.naam.toLowerCase().includes(filter.toLowerCase()) ||
+            address.adres.toLowerCase().includes(filter.toLowerCase())
+          ) {
+            features.push(feature);
+          }
         }
       }
     }
