@@ -22,14 +22,38 @@ export function Footer() {
           <h5>Dank</h5>
           <ul className={"mt-2"}>
             <li>
-              Hosting en beheer door <a href="#">Ramon</a>
+              Hosting en beheer door{" "}
+              <a
+                href="https://igniteme.nl/"
+                target={"_blank"}
+                rel={"noreferrer"}
+              >
+                Ramon
+              </a>
             </li>
             <li>
-              Code door <a href="#">Sefrijn</a> van{" "}
-              <a href="#">How About Yes</a>
+              Code door{" "}
+              <a href="https://sefrijn.nl" target={"_blank"} rel={"noreferrer"}>
+                Sefrijn
+              </a>{" "}
+              van{" "}
+              <a
+                href="https://howaboutyes.com"
+                target={"_blank"}
+                rel={"noreferrer"}
+              >
+                Studio How About Yes
+              </a>
             </li>
             <li>
-              Foto’s door <a href="#">Ilse Wolf</a>
+              Foto’s door{" "}
+              <a
+                href="https://www.ilsewolf.nl/"
+                target={"_blank"}
+                rel={"noreferrer"}
+              >
+                Ilse Wolf
+              </a>
             </li>
           </ul>
         </div>
