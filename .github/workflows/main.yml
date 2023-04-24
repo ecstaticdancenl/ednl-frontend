@@ -7,6 +7,9 @@ on:
   # Allows external webhook trigger
   repository_dispatch:
 
+env:
+  NEXT_PUBLIC_MEASUREMENT_ID: ${{ secrets.google_analytics }}
+  
 jobs:
   build:
     name: Build ⛏️
