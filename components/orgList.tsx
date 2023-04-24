@@ -18,8 +18,8 @@ export function OrgList({ organisations, mapFilter }: OrgListProps) {
             !org.title.toLowerCase().includes(mapFilter.toLowerCase()) &&
             !org.acfOrganisatieGegevens.locaties?.some(
               (loc: any) =>
-                loc.naam.toLowerCase().includes(mapFilter.toLowerCase()) ||
-                loc.adres.toLowerCase().includes(mapFilter.toLowerCase())
+                loc.naam?.toLowerCase().includes(mapFilter.toLowerCase()) ||
+                loc.adres?.toLowerCase().includes(mapFilter.toLowerCase())
             )
           ) {
             return;
@@ -42,29 +42,30 @@ export function OrgList({ organisations, mapFilter }: OrgListProps) {
                 "my-0.5 grid gap-2",
               ].join(" ")}
             >
-              {!org.acfOrganisatieGegevens.locaties && (
+              {!org.acfOrganisatieGegevens.locaties?.[0]?.naam && (
                 <p className={"text-sm"}>Op dit moment geen locatie</p>
               )}
-              {org.acfOrganisatieGegevens.locaties?.map((loc: any) => {
-                return (
-                  <div
-                    className={"text-sm px-2 flex gap-2 items-start"}
-                    key={loc.naam}
-                  >
-                    <MarkerIcon className={"opacity-25 text-white"} />
-                    <div className={"flex flex-col gap-1"}>
-                      <p>{getHighlightedText(loc.naam, mapFilter)}</p>
-                      <p
-                        className={
-                          "text-xs font-light text-white/60 whitespace-pre-wrap"
-                        }
-                      >
-                        {getHighlightedText(loc.adres, mapFilter)}
-                      </p>
+              {org.acfOrganisatieGegevens.locaties?.[0]?.naam &&
+                org.acfOrganisatieGegevens.locaties?.map((loc: any) => {
+                  return (
+                    <div
+                      className={"text-sm px-2 flex gap-2 items-start"}
+                      key={loc.naam}
+                    >
+                      <MarkerIcon className={"opacity-25 text-white"} />
+                      <div className={"flex flex-col gap-1"}>
+                        <p>{getHighlightedText(loc.naam, mapFilter)}</p>
+                        <p
+                          className={
+                            "text-xs font-light text-white/60 whitespace-pre-wrap"
+                          }
+                        >
+                          {getHighlightedText(loc.adres, mapFilter)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           </Link>
         );

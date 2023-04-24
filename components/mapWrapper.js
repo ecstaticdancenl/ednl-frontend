@@ -55,8 +55,8 @@ export function MapWrapper({
           feature.set("hover", 0);
           if (
             organisation.title.toLowerCase().includes(filter.toLowerCase()) ||
-            address.naam.toLowerCase().includes(filter.toLowerCase()) ||
-            address.adres.toLowerCase().includes(filter.toLowerCase())
+            address.naam?.toLowerCase().includes(filter.toLowerCase()) ||
+            address.adres?.toLowerCase().includes(filter.toLowerCase())
           ) {
             features.push(feature);
           }
