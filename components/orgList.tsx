@@ -4,26 +4,14 @@ import { getHighlightedText } from "@/components/highlightText";
 import MarkerIcon from "@/components/markerIcon";
 
 type OrgListProps = {
-  organisations: { nodes: [] };
+  organisations: [];
   mapFilter: string;
 };
 
 export function OrgList({ organisations, mapFilter }: OrgListProps) {
   return (
     <div className={"flex flex-col gap-2"}>
-      {organisations.nodes.map((org: Organisation, index: number) => {
-        if (mapFilter !== "") {
-          if (
-            !org.title.toLowerCase().includes(mapFilter.toLowerCase()) &&
-            !org.acfOrganisatieGegevens.locaties?.some(
-              (loc: any) =>
-                loc.naam?.toLowerCase().includes(mapFilter.toLowerCase()) ||
-                loc.adres?.toLowerCase().includes(mapFilter.toLowerCase())
-            )
-          ) {
-            return;
-          }
-        }
+      {organisations.map((org: Organisation, index: number) => {
         return (
           <Link
             key={index}

@@ -62,19 +62,13 @@ export function MapWrapper({
             feature.set("naam", address.naam);
           }
           feature.set("hover", 0);
-          if (
-            organisation.title.toLowerCase().includes(filter.toLowerCase()) ||
-            address.naam?.toLowerCase().includes(filter.toLowerCase()) ||
-            address.adres?.toLowerCase().includes(filter.toLowerCase())
-          ) {
-            features.push(feature);
-          }
+          features.push(feature);
         }
       }
     }
     source.clear();
     source.addFeatures(features);
-  }, [filter]);
+  }, [organisations]);
 
   useEffect(() => {
     if (customExtent) zoomToExtent(map);

@@ -22,30 +22,69 @@ export function Locaties(props: {
   organisations: { nodes: [] };
 }) {
   const [mapFilter, setMapFilter] = useState<string>("");
+  const [filteredOrgs, setFilteredOrgs] = useState<any>([]);
+  const [countOrgs, setCountOrgs] = useState<number>(0);
 
   useEffect(() => {
     if (mapFilter !== "") {
-      scrollIntoViewWithOffset("locaties", 20);
+      scrollIntoViewWithOffset("locaties", 60);
     }
   }, [mapFilter]);
 
+  useEffect(() => {
+    setCountOrgs(
+      filteredOrgs.reduce((total: any, org: any) => {
+        return total + org.acfOrganisatieGegevens.locaties.length;
+      }, 0)
+    );
+  }, [filteredOrgs]);
+
+  useEffect(() => {
+    setFilteredOrgs(
+      props.organisations.nodes.filter((org: any) => {
+        if (mapFilter !== "") {
+          if (
+            !org.title.toLowerCase().includes(mapFilter.toLowerCase()) &&
+            !org.acfOrganisatieGegevens.locaties?.some(
+              (loc: any) =>
+                loc.naam?.toLowerCase().includes(mapFilter.toLowerCase()) ||
+                loc.adres?.toLowerCase().includes(mapFilter.toLowerCase())
+            )
+          ) {
+            return false;
+          }
+        }
+        return true;
+      })
+    );
+  }, [props.organisations, mapFilter]);
+
+  useEffect(() => {
+    console.log(filteredOrgs);
+  }, [filteredOrgs]);
   return (
     <div className={props.blobs ? "relative my-24" : "relative mt-8 mb-24"}>
       {props.blobs && <Bubbles flipped className={"top-12"} />}
 
       <section
-        className={"lg:px-10 px-6 flex flex-col items-center gap-4 relative"}
+        className={"lg:px-10 px-6 flex flex-col items-center gap-2 relative"}
       >
         <span
           id={"locaties"}
           className={"h-1 w-1 absolute top-0 left-0"}
         ></span>
-        <Label>Locaties</Label>
-        <h2 className={"-mt-3"}>Waar kan je dansen?</h2>
-        <div className={"relative shadow"}>
+        <h2 className={["-mb-1 mt-0 transition-all"].join(" ")}>
+          Waar kan je dansen?
+        </h2>
+        <Label>
+          {" "}
+          {countOrgs} locatie{countOrgs > 1 && "s"}
+          {mapFilter === "" && " in Nederland"}
+        </Label>
+        <div className={"relative"}>
           <input
             className={
-              "bg-white/10 rounded-md hover:bg-white/20 py-2 px-4 placeholder-white/50 transition-colors w-72"
+              " shadow bg-white/10 rounded-md hover:bg-white/20 py-1.5 px-4 placeholder-white/50 transition-colors w-72"
             }
             type="text"
             placeholder={"Vind een plek..."}
@@ -55,11 +94,11 @@ export function Locaties(props: {
           {mapFilter !== "" && (
             <button
               className={
-                "absolute rounded-md right-0 h-full px-4 hover:bg-white/20 text-2xl"
+                "absolute rounded-md right-0 h-full px-3.5 hover:bg-white/20 text-2xl"
               }
               onClick={() => {
                 setMapFilter("");
-                scrollIntoViewWithOffset("locaties", 20);
+                scrollIntoViewWithOffset("locaties", 60);
               }}
             >
               &times;
@@ -74,9 +113,9 @@ export function Locaties(props: {
           <MapWrapper
             setFilter={setMapFilter}
             filter={mapFilter}
-            organisations={props.organisations.nodes}
+            organisations={filteredOrgs}
           />
-          <OrgList organisations={props.organisations} mapFilter={mapFilter} />
+          <OrgList organisations={filteredOrgs} mapFilter={mapFilter} />
         </div>
       </section>
     </div>
