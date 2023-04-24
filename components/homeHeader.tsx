@@ -9,7 +9,7 @@ export function HomeHeader() {
         >
           Ecstatic Dance
         </span>
-        <span className={"pointer-events-auto"}>in</span>
+        <span className={"pointer-events-auto text-lg"}>in</span>
         <span className={"pointer-events-auto text-2xl"}>Nederland</span>
       </h1>
     </header>
