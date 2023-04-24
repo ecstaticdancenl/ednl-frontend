@@ -72,6 +72,7 @@ export function Locaties(props: {
           }
         >
           <MapWrapper
+            setFilter={setMapFilter}
             filter={mapFilter}
             organisations={props.organisations.nodes}
           />

@@ -170,6 +170,7 @@ export default function Locatie({ organisation }: AppProps) {
           </div>
           {organisation.acfOrganisatieGegevens.locaties?.[0]?.naam && (
             <MapWrapper
+              setFilter={null}
               organisations={[organisation]}
               customExtent
               className={"lg:h-96 h-72 col-span-2"}

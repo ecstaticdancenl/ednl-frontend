@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Organisation } from "@/types/organisation";
 import { getHighlightedText } from "@/components/highlightText";
-import basepath from "@/lib/basepath";
 import MarkerIcon from "@/components/markerIcon";
 
 type OrgListProps = {
@@ -33,6 +32,13 @@ export function OrgList({ organisations, mapFilter }: OrgListProps) {
               "group bg-white/5 shadow rounded-md hover:bg-white/10 transition-colors block pt-2.5 pb-3 px-3.5 relative"
             }
           >
+            <div
+              className={
+                "flex items-center gap-1 absolute right-4 top-3 group-hover:opacity-60 opacity-0 transition-opacity text-sm"
+              }
+            >
+              <span>Meer info</span>
+            </div>
             <h4 className={"mb-1.5"}>{org.title}</h4>
             <div
               className={[
