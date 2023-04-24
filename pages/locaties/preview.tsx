@@ -38,18 +38,13 @@ async function getDynamicProps(slug: string) {
     `,
   });
 
-  //   Get addresses and long lat coordinates from external GEO API
-  const addresses = getAddressesFromWP([data.organisation]);
-
   return {
     organisation: data.organisation,
-    addresses: addresses,
   };
 }
 
 type AppProps = {
   organisation: Organisation;
-  addresses: { [key: string]: Address };
 };
 
 const defaultOptions = {
@@ -85,7 +80,7 @@ export default function Preview() {
   if (data) {
     return (
       <>
-        <Locatie organisation={data.organisation} addresses={data.addresses} />
+        <Locatie organisation={data.organisation} />
       </>
     );
   }
