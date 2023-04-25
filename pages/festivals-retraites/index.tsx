@@ -16,7 +16,6 @@ export async function getStaticProps() {
       query {
         festivalsEnRetraites(
           first: ${limit}
-          where: { orderby: { field: TITLE, order: ASC } }
         ) {      
             nodes{
               id
@@ -25,7 +24,7 @@ export async function getStaticProps() {
                 node{
                     sourceUrl
                 }
-                }
+              }
               eventInfo{
                 soortEvent
                 subtitel
@@ -50,17 +49,37 @@ export async function getStaticProps() {
   };
 }
 
+function niceDate(dateString: string) {
+  const year = dateString.substring(0, 4);
+  const month = parseInt(dateString.substring(4, 6));
+  const day = parseInt(dateString.substring(6, 8));
+  const monthNames = [
+    "januari",
+    "februari",
+    "maart",
+    "april",
+    "mei",
+    "juni",
+    "juli",
+    "augustus",
+    "september",
+    "oktober",
+    "november",
+    "december",
+  ];
+  const monthName = monthNames[month - 1];
+  const currentYear = new Date().getFullYear();
+  if (dateString.startsWith(currentYear.toString())) {
+    return `${day} ${monthName}`;
+  } else {
+    return `${day} ${monthName} ${year}`;
+  }
+}
+
 export default function Index(props: any) {
   console.log(props.data);
   const events = props.data.festivalsEnRetraites.nodes;
-  const currentYear = new Date().getFullYear();
-  const showDate = (date: string) => {
-    if (date.endsWith(currentYear.toString())) {
-      return date.slice(0, -5);
-    } else {
-      return date;
-    }
-  };
+
   return (
     <>
       <Head>
@@ -113,8 +132,8 @@ export default function Index(props: any) {
               </Label>
               <h3>{event.title}</h3>
               <p className={"text-base text-white/60"}>
-                {showDate(event.eventInfo.wanneer.start)} tot{" "}
-                {showDate(event.eventInfo.wanneer.einde)}
+                {niceDate(event.eventInfo.wanneer.start)} tot{" "}
+                {niceDate(event.eventInfo.wanneer.einde)}
               </p>
               {event.eventInfo.subtitel && (
                 <p className={"text-sm"}>{event.eventInfo.subtitel}</p>
