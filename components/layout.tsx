@@ -46,7 +46,7 @@ export default function Layout({ children }: { children: any }) {
       )}
       <div
         className={
-          "md:pt-24 pt-16 flex flex-col text-white min-h-screen max-w-screen-2xl mx-auto relative"
+          "md:pt-24 pt-16 flex flex-col text-white min-h-screen relative max-w-wrapper"
         }
       >
         {children}

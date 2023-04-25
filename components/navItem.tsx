@@ -10,7 +10,7 @@ export function NavItem({ href, children }: { href: string; children: any }) {
         router.pathname === href
           ? "underline_animated_active"
           : "",
-        "underline_animated md:text-base text-4xl",
+        "underline_animated md:text-sm lg:text-base text-4xl",
       ].join(" ")}
       href={href}
     >

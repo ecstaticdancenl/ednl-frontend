@@ -100,3 +100,10 @@ main ul{
 main ol{
     @apply list-decimal list-inside my-3;
 }
+
+.max-w-wrapper > *{
+    @apply max-w-screen-2xl mx-auto;
+}
+.max-w-wrapper > footer, .max-w-wrapper > #navigation{
+    @apply max-w-none mx-0;
+}

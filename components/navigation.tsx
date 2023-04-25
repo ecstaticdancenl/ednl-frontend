@@ -33,6 +33,7 @@ export function Navigation() {
 
   return (
     <div
+      id={"navigation"}
       className={[
         "w-full fixed top-0 left-0 z-50",
         scrolled ? "backdrop-blur-md bg-slate-900/20" : "backdrop-blur-none",
@@ -62,13 +63,18 @@ export function Navigation() {
               animate={!isMD ? { opacity: 1, y: 0 } : {}}
               exit={!isMD ? { opacity: 0, y: -200 } : {}}
               className={
-                "absolute md:relative z-10 md:w-auto w-full md:bg-transparent bg-blue-950 left-0 top-0 md:h-auto h-screen lg:gap-8 gap-4 tracking-wider flex md:flex-row flex-col justify-center items-center"
+                "absolute md:relative z-10 md:w-auto w-full md:bg-transparent bg-blue-950 left-0 top-0 md:h-auto h-screen lg:gap-8 md:gap-3 gap-4 tracking-wider flex md:flex-row flex-col justify-center items-center"
               }
             >
               {!isMD && <NavItem href={"/"}>Home</NavItem>}
               <NavItem href={"/over"}>Introductie</NavItem>
               <NavItem href={"/locaties"}>Locaties</NavItem>
               <NavItem href={"/agenda"}>Agenda</NavItem>
+              {process.env.NODE_ENV === "development" && (
+                <NavItem href={"/festivals-retraites"}>
+                  Festivals &amp; Retraites
+                </NavItem>
+              )}
             </motion.nav>
           )}
         </AnimatePresence>

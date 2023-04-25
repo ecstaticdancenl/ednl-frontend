@@ -11,7 +11,7 @@ export function Label({
     <p
       className={[
         className,
-        "text-sm text-blue-200/50 uppercase tracking-widest font-semibold",
+        "text-sm text-blue-200/50 uppercase tracking-widest font-semibold pointer-events-auto",
       ].join(" ")}
     >
       {children}
