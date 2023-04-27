@@ -70,11 +70,9 @@ export function Navigation() {
               <NavItem href={"/over"}>Introductie</NavItem>
               <NavItem href={"/locaties"}>Locaties</NavItem>
               <NavItem href={"/agenda"}>Agenda</NavItem>
-              {process.env.NODE_ENV === "development" && (
-                <NavItem href={"/festivals-retraites"}>
-                  Festivals &amp; Retraites
-                </NavItem>
-              )}
+              <NavItem href={"/festivals-retraites"}>
+                Festivals &amp; Retraites
+              </NavItem>
             </motion.nav>
           )}
         </AnimatePresence>
