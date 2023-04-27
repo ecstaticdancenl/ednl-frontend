@@ -63,7 +63,11 @@ export function Locaties(props: {
     console.log(filteredOrgs);
   }, [filteredOrgs]);
   return (
-    <div className={props.blobs ? "relative my-24" : "relative mt-8 mb-24"}>
+    <div
+      className={["relative w-full", props.blobs ? "my-24" : "mt-8 mb-24"].join(
+        " "
+      )}
+    >
       {props.blobs && <Bubbles flipped className={"top-12"} />}
 
       <section
