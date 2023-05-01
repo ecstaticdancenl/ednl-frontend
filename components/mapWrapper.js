@@ -57,7 +57,10 @@ export function MapWrapper({
           const lonlat = JSON.parse(address.lonlat);
           const coordinate = fromLonLat([lonlat[0], lonlat[1]], "EPSG:3857");
           const feature = new Feature(new Point(coordinate));
-          feature.set("organisation", organisation.title);
+          feature.set(
+            "organisation",
+            organisation.title.replace(/Ecstatic Dance/g, "ED")
+          );
           if (organisation.acfOrganisatieGegevens.locaties.length > 1) {
             feature.set("naam", address.naam);
           }
@@ -133,7 +136,9 @@ export function MapWrapper({
                 .fit(extent, { duration: 500, padding: [150, 150, 150, 150] });
             } else {
               clusterMembers.forEach(function (feature) {
-                setFilter(feature.get("organisation"));
+                setFilter(
+                  feature.get("organisation").replace(/ED/g, "Ecstatic Dance")
+                );
                 zoomToExtent(map);
               });
             }

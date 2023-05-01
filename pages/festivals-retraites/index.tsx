@@ -8,6 +8,7 @@ import { Locaties } from "@/components/locaties";
 import { Footer } from "@/components/footer";
 import { Label } from "@/components/label";
 import { Button } from "@/components/button";
+import Link from "next/link";
 
 export async function getStaticProps() {
   //    Get data from WordPress
@@ -76,8 +77,50 @@ function niceDate(dateString: string) {
   }
 }
 
+function FestivalItem({ event }: { event: any }) {
+  return (
+    <a
+      href={event.eventInfo.ticketLink}
+      key={event.id}
+      target={"_blank"}
+      rel={"noopener noreferrer"}
+      className={
+        "w-full lg:w-[calc(50%-1.25rem)] flex flex-col items-center text-center sm:flex-col gap-4 bg-white/5 hover:bg-white/10 transition-colors shadow rounded-2xl group"
+      }
+    >
+      <img
+        className={"aspect-[1.8] object-cover rounded-2xl"}
+        src={event.featuredImage.node.sourceUrl}
+        alt=""
+      />
+      <div className={"sm:w-3/4"}>
+        <Label className={"drop-shadow"}>{event.eventInfo.soortEvent}</Label>
+        <h3 className={"text-2xl"}>{event.title}</h3>
+        <p className={"text-base text-white/60"}>
+          {niceDate(event.eventInfo.wanneer.start)} tot{" "}
+          {niceDate(event.eventInfo.wanneer.einde)}
+        </p>
+        {event.eventInfo.subtitel && (
+          <p className={"text-sm"}>{event.eventInfo.subtitel}</p>
+        )}
+        <hr className={"opacity-10 border-t-2 my-2"} />
+        <p className={"text-sm font-medium"}>{event.eventInfo.locatieNaam}</p>
+        <p className={"text-xs whitespace-pre-wrap opacity-60"}>
+          {event.eventInfo.adres}
+        </p>
+        <button
+          className={
+            "bg-rose-600 uppercase inline-block font-bold tracking-very-wide group-hover:bg-rose-500 text-sm px-4 py-1 my-5"
+          }
+        >
+          Info &amp; Tickets
+        </button>
+      </div>
+    </a>
+  );
+}
+
 export default function Index(props: any) {
-  console.log(props.data);
   const events = props.data.festivalsEnRetraites.nodes;
 
   return (
@@ -109,59 +152,13 @@ export default function Index(props: any) {
       </div>
       <section
         className={
-          "lg:px-10 px-6 my-16 flex flex-wrap flex-col lg:flex-row w-full gap-10 justify-center grow"
+          "lg:px-10 sm:px-6 px-4 my-16 flex flex-wrap flex-col lg:flex-row w-full gap-10 justify-center grow"
         }
       >
         {events.map((event: any) => (
-          <div
-            key={event.id}
-            className={
-              "w-full lg:w-[calc(50%-1.25rem)] flex flex-col items-start sm:flex-row gap-4"
-            }
-          >
-            <img
-              className={
-                "sm:w-2/5 aspect-[1.4] object-cover rounded-2xl border-8 border-white/20 shadow"
-              }
-              src={event.featuredImage.node.sourceUrl}
-              alt=""
-            />
-            <div className={"sm:w-3/5"}>
-              <Label className={"drop-shadow"}>
-                {event.eventInfo.soortEvent}
-              </Label>
-              <h3>{event.title}</h3>
-              <p className={"text-base text-white/60"}>
-                {niceDate(event.eventInfo.wanneer.start)} tot{" "}
-                {niceDate(event.eventInfo.wanneer.einde)}
-              </p>
-              {event.eventInfo.subtitel && (
-                <p className={"text-sm"}>{event.eventInfo.subtitel}</p>
-              )}
-              <hr className={"opacity-10 border-t-2 my-2"} />
-              <p className={"text-sm font-medium"}>
-                {event.eventInfo.locatieNaam}
-              </p>
-              <p className={"text-xs whitespace-pre-wrap opacity-60"}>
-                {event.eventInfo.adres}
-              </p>
-              <Button
-                size={"sm"}
-                className={"mt-3"}
-                href={event.eventInfo.ticketLink}
-              >
-                Info
-              </Button>
-            </div>
-          </div>
+          <FestivalItem key={event.id} event={event} />
         ))}
       </section>
-      {/*<img src={page.featuredImage.node.sourceUrl} alt="" />*/}
-      {/*<main className={"px-6 md:px-0 max-w-screen-sm mx-auto md:mb-32 mb-16"}>*/}
-      {/*  {page.content && (*/}
-      {/*    <div dangerouslySetInnerHTML={{ __html: page.content }} />*/}
-      {/*  )}*/}
-      {/*</main>*/}
       <Footer />
     </>
   );

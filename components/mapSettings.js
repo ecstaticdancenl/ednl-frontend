@@ -15,7 +15,7 @@ export const source = new VectorSource({
 });
 // How tight locations are clustered together
 const clusterSource = new Cluster({
-  distance: 80,
+  distance: 60,
   source: source,
 });
 
