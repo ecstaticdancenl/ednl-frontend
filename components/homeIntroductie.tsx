@@ -25,9 +25,14 @@ export function HomeIntroductie() {
           opzoeken is niet het doel. Laat de ervaring tot je doordringen, de
           muziek, de energie. Even niet in je hoofd, vrij van gedachte.
         </p>
-        <Button className={"mt-2"} href={"/over"}>
-          Lees meer
-        </Button>
+        <div className={"flex gap-4"}>
+          <Button className={"mt-2"} href={"/over"}>
+            Lees meer
+          </Button>
+          <Button className={"mt-2"} href={"/agenda"}>
+            agenda
+          </Button>
+        </div>
       </div>
       <img
         className={"justify-self-end md:w-auto w-32"}

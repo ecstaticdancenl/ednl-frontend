@@ -63,7 +63,7 @@ h5{
 footer a{
     @apply underline underline-offset-4 font-medium tracking-wider transition-colors hover:text-rose-400;
 }
-main a{
+main a, a.rose{
     @apply text-rose-400 transition-colors hover:text-rose-500;
 }
 main p{
