@@ -103,7 +103,7 @@ export default function Locatie({ organisation }: AppProps) {
       <OrgHeader organisation={organisation} />
       <div
         className={
-          "grid grid-cols-1 lg:grid-cols-3 lg:gap-8 my-10 gap-y-8 lg:px-10 sm:px-6 px-4"
+          "w-full grid grid-cols-1 lg:grid-cols-3 lg:gap-8 my-10 gap-y-8 lg:px-10 sm:px-6 px-4"
         }
       >
         <div className={"lg:sticky top-12 self-start lg:mb-6"}>
