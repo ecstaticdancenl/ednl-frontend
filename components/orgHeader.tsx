@@ -6,7 +6,7 @@ import EmailIcon from "@/components/emailIcon";
 export function OrgHeader({ organisation }: { organisation: Organisation }) {
   return (
     <header
-      className="locatie relative z-10 lg:mx-10 mx-6"
+      className="w-full locatie relative z-10 lg:px-10 sm:px-6 px-4"
       style={{ height: "50vh", maxHeight: "350px" }}
     >
       {organisation.featuredImage && (

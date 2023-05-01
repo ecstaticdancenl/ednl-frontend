@@ -41,7 +41,7 @@ export async function getStaticProps({ params }: any) {
 
   const eventsFacebook = await getEventsFromFacebook();
   const eventsHipsy = await getEventsFromHipsy(data.organisations.nodes);
-  const events = sortEventsByDate([...eventsFacebook, ...eventsHipsy.flat(1)]);
+  const events = sortEventsByDate([...eventsHipsy.flat(1), ...eventsFacebook]);
 
   return {
     props: {
@@ -53,12 +53,24 @@ export async function getStaticProps({ params }: any) {
 
 type AppProps = {
   className: string;
-  organisations: { nodes: [] };
   events: any;
-  dataFacebook: any;
 };
 
-export default function Agenda({ organisations, events }: AppProps) {
+function uniqueEvents(events: any) {
+  const uniqueTitles: { [key: string]: boolean } = {};
+  const uniqueDates: { [key: string]: boolean } = {};
+  return events.filter((event: any) => {
+    if (uniqueTitles[event.title] && uniqueDates[event.start_time]) {
+      return false;
+    }
+    uniqueTitles[event.title] = true;
+    uniqueDates[event.start_time] = true;
+    return true;
+  });
+}
+
+export default function Agenda({ events }: AppProps) {
+  const eventsFiltered = uniqueEvents(events);
   const [page, setPage] = useState(1);
   const itemsPerPage = 8;
   return (
@@ -89,44 +101,45 @@ export default function Agenda({ organisations, events }: AppProps) {
           "lg:px-10 sm:px-6 px-4 mt-4 mb-16 mx-auto flex flex-col lg:w-3/4 xl:w-2/3 gap-2 md:gap-4 justify-start items-center grow"
         }
       >
-        {events.slice(0, page * itemsPerPage).map((event: any) => {
-          if (event.type === "Facebook") {
-            return (
-              <EventItem
-                key={event.id}
-                url={
-                  event.ticket_uri
-                    ? event.ticket_uri
-                    : `https://www.facebook.com/events/${event.id}`
-                }
-                img={event.cover.source}
-                label={
-                  event?.place?.name
-                    ? event?.place?.name +
-                      (event?.place?.location?.city
-                        ? ", " + event?.place?.location?.city
-                        : "")
-                    : "facebook event"
-                }
-                title={event.name}
-                date={formatDateDutch(event.start_time, false)}
-              />
-            );
-          }
-          if (event.type === "Hipsy") {
-            return (
-              <EventItem
-                key={event.id}
-                type={"Hipsy"}
-                url={event.url_hipsy}
-                img={event.picture_small}
-                label={formatHipsyAddress(event.location)}
-                title={event.title}
-                date={formatDateDutch(event.date, false)}
-              />
-            );
-          }
-        })}
+        {eventsFiltered &&
+          eventsFiltered.slice(0, page * itemsPerPage).map((event: any) => {
+            if (event.type === "Facebook") {
+              return (
+                <EventItem
+                  key={event.id}
+                  url={
+                    event.ticket_uri
+                      ? event.ticket_uri
+                      : `https://www.facebook.com/events/${event.id}`
+                  }
+                  img={event.cover.source}
+                  label={
+                    event?.place?.name
+                      ? event?.place?.name +
+                        (event?.place?.location?.city
+                          ? ", " + event?.place?.location?.city
+                          : "")
+                      : "facebook event"
+                  }
+                  title={event.name}
+                  date={formatDateDutch(event.start_time, false)}
+                />
+              );
+            }
+            if (event.type === "Hipsy") {
+              return (
+                <EventItem
+                  key={event.id}
+                  type={"Hipsy"}
+                  url={event.url_hipsy}
+                  img={event.picture_small}
+                  label={formatHipsyAddress(event.location)}
+                  title={event.title}
+                  date={formatDateDutch(event.date, false)}
+                />
+              );
+            }
+          })}
         {events.length > page * itemsPerPage && (
           <button
             onClick={() => setPage(page + 1)}
