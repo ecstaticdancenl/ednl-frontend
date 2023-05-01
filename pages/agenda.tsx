@@ -6,47 +6,10 @@ import { Label } from "@/components/label";
 import client from "@/apollo-client";
 import { gql } from "@apollo/client";
 import limit from "@/lib/limit";
-import { format, parseISO } from "date-fns";
-import { nl } from "date-fns/locale";
 import { useState } from "react";
-
-function formatDateDutch(dateString: string) {
-  const date = new Date(dateString.slice(0, -1) + "+02:00");
-  return format(date, "d MMMM yyyy 'om' HH:mm", { locale: nl });
-}
-
-function sortEventsByDate(events: any[]) {
-  return events.sort((a, b) => {
-    const dateA = parseISO(a.date);
-    const dateB = parseISO(b.date);
-    return dateA.getTime() - dateB.getTime();
-  });
-}
-
-async function getEventsFromHipsy(organisations: any) {
-  const promises = organisations.map(async (org: any) => {
-    if (!org?.acfOrganisatieGegevens?.hipsy?.apiKey) return;
-    const hipsy = org.acfOrganisatieGegevens.hipsy;
-    const res = await fetch(
-      `https://api.hipsy.nl/v1/organisation/${hipsy.slug}/events?period=upcoming&limit=10`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${hipsy.apiKey}`,
-        },
-      }
-    );
-    const data = await res.json();
-    const events = data.data.map((event: any) => {
-      event.organisation = org.title;
-      return event;
-    });
-    return events;
-  });
-
-  const results = await Promise.all(promises);
-  return results.filter((result) => result !== undefined);
-}
+import { formatDateDutch } from "@/lib/formatDateDutch";
+import { sortEventsByDate } from "@/lib/sortEventsByDate";
+import { getEventsFromHipsy } from "@/lib/getEventsFromHipsy";
 
 export async function getStaticProps({ params }: any) {
   //    Get data from WordPress
@@ -91,7 +54,7 @@ type AppProps = {
 
 export default function Agenda({ organisations, events }: AppProps) {
   const [page, setPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 10;
   return (
     <>
       <Head>
@@ -115,7 +78,7 @@ export default function Agenda({ organisations, events }: AppProps) {
       </header>
       <section
         className={
-          "lg:px-10 px-6 mt-4 mb-16 mx-auto flex flex-col w-2/3 gap-2 justify-start items-center grow"
+          "lg:px-10 px-6 mt-4 mb-16 mx-auto flex flex-col lg:w-3/4 xl:w-2/3 gap-2 md:gap-4 justify-start items-center grow"
         }
       >
         {events.slice(0, page * itemsPerPage).map((event: any) => (
@@ -125,18 +88,20 @@ export default function Agenda({ organisations, events }: AppProps) {
             rel={"noreferrer"}
             key={event.id}
             className={
-              "w-full group bg-white/5 shadow rounded-md transition-colors hover:bg-white/10 transition-colors flex gap-3 items-center p-1.5 relative"
+              "w-full group bg-white/5 shadow rounded-md transition-colors hover:bg-white/10 transition-colors flex gap-3 items-center relative"
             }
           >
             <img
-              className={"w-24 h-16 rounded object-cover"}
+              className={"md:w-28 w-24 md:h-20 h-24 rounded object-cover"}
               src={event.picture_small}
               alt={event.title}
             />
-            <div className={"flex flex-col"}>
-              <Label className={"text-xs"}>{event.organisation}</Label>
+            <div className={"flex flex-col p-1 md:p-1"}>
+              <Label className={"md:text-xs text-[11px] leading-[1.2]"}>
+                {event.organisation}
+              </Label>
               <h4>{event.title}</h4>
-              <div className={"text-base text-white/60"}>
+              <div className={"text-sm md:text-base text-white/60"}>
                 {formatDateDutch(event.date)}
               </div>
             </div>

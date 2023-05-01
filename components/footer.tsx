@@ -56,7 +56,7 @@ export function Footer() {
               <li>
                 Foto’s door{" "}
                 <a
-                  href="https://www.ilsewolf.nl/"
+                  href="https://www.feetinthedirtheadintheclouds.com/"
                   target={"_blank"}
                   rel={"noreferrer"}
                 >
