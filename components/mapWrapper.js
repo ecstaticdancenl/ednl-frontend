@@ -128,13 +128,11 @@ export function MapWrapper({
               clusterMembers.forEach((feature) =>
                 extend(extent, feature.getGeometry().getExtent())
               );
-              console.log("zoom fit");
               initialMap
                 .getView()
                 .fit(extent, { duration: 500, padding: [150, 150, 150, 150] });
             } else {
               clusterMembers.forEach(function (feature) {
-                console.log(feature.get("organisation"));
                 setFilter(feature.get("organisation"));
                 zoomToExtent(map);
               });

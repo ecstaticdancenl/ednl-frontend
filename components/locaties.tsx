@@ -59,9 +59,6 @@ export function Locaties(props: {
     );
   }, [props.organisations, mapFilter]);
 
-  useEffect(() => {
-    console.log(filteredOrgs);
-  }, [filteredOrgs]);
   return (
     <div
       className={["relative w-full", props.blobs ? "my-24" : "mt-8 mb-24"].join(

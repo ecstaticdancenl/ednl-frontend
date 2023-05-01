@@ -9,6 +9,7 @@ on:
 
 env:
   NEXT_PUBLIC_MEASUREMENT_ID: ${{ secrets.google_analytics }}
+  FACEBOOK: ${{ secrets.facebook }}
   
 jobs:
   build:

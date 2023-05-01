@@ -10,6 +10,9 @@ import { useState } from "react";
 import { formatDateDutch } from "@/lib/formatDateDutch";
 import { sortEventsByDate } from "@/lib/sortEventsByDate";
 import { getEventsFromHipsy } from "@/lib/getEventsFromHipsy";
+import { formatHipsyAddress } from "@/lib/formatHipsyAddress";
+import { EventItem } from "@/components/eventItem";
+import { getEventsFromFacebook } from "@/lib/getEventsFromFacebook";
 
 export async function getStaticProps({ params }: any) {
   //    Get data from WordPress
@@ -36,12 +39,14 @@ export async function getStaticProps({ params }: any) {
     `,
   });
 
-  const events = await getEventsFromHipsy(data.organisations.nodes);
+  const eventsFacebook = await getEventsFromFacebook();
+  const eventsHipsy = await getEventsFromHipsy(data.organisations.nodes);
+  const events = sortEventsByDate([...eventsFacebook, ...eventsHipsy.flat(1)]);
 
   return {
     props: {
       organisations: data.organisations,
-      events: sortEventsByDate(events.flat(1)),
+      events: events,
     },
   };
 }
@@ -50,11 +55,12 @@ type AppProps = {
   className: string;
   organisations: { nodes: [] };
   events: any;
+  dataFacebook: any;
 };
 
 export default function Agenda({ organisations, events }: AppProps) {
   const [page, setPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 8;
   return (
     <>
       <Head>
@@ -81,32 +87,44 @@ export default function Agenda({ organisations, events }: AppProps) {
           "lg:px-10 px-6 mt-4 mb-16 mx-auto flex flex-col lg:w-3/4 xl:w-2/3 gap-2 md:gap-4 justify-start items-center grow"
         }
       >
-        {events.slice(0, page * itemsPerPage).map((event: any) => (
-          <a
-            href={event.url_hipsy}
-            target={"_blank"}
-            rel={"noreferrer"}
-            key={event.id}
-            className={
-              "w-full group bg-white/5 shadow rounded-md transition-colors hover:bg-white/10 transition-colors flex gap-3 items-center relative"
-            }
-          >
-            <img
-              className={"md:w-28 w-24 md:h-20 h-24 rounded object-cover"}
-              src={event.picture_small}
-              alt={event.title}
-            />
-            <div className={"flex flex-col p-1 md:p-1"}>
-              <Label className={"md:text-xs text-[11px] leading-[1.2]"}>
-                {event.organisation}
-              </Label>
-              <h4>{event.title}</h4>
-              <div className={"text-sm md:text-base text-white/60"}>
-                {formatDateDutch(event.date)}
-              </div>
-            </div>
-          </a>
-        ))}
+        {events.slice(0, page * itemsPerPage).map((event: any) => {
+          if (event.type === "Facebook") {
+            return (
+              <EventItem
+                key={event.id}
+                url={
+                  event.ticket_uri
+                    ? event.ticket_uri
+                    : `https://www.facebook.com/events/${event.id}`
+                }
+                img={event.cover.source}
+                label={
+                  event?.place?.name
+                    ? event?.place?.name +
+                      (event?.place?.location?.city
+                        ? ", " + event?.place?.location?.city
+                        : "")
+                    : "facebook event"
+                }
+                title={event.name}
+                date={formatDateDutch(event.start_time, false)}
+              />
+            );
+          }
+          if (event.type === "Hipsy") {
+            return (
+              <EventItem
+                key={event.id}
+                type={"Hipsy"}
+                url={event.url_hipsy}
+                img={event.picture_small}
+                label={formatHipsyAddress(event.location)}
+                title={event.title}
+                date={formatDateDutch(event.date, false)}
+              />
+            );
+          }
+        })}
         {events.length > page * itemsPerPage && (
           <button
             onClick={() => setPage(page + 1)}
@@ -134,9 +152,18 @@ export default function Agenda({ organisations, events }: AppProps) {
             target={"_blank"}
             rel={"noreferrer"}
           >
-            Hipsy
+            Hipsy API
           </a>{" "}
-          API. Jouw event op deze agenda?{" "}
+          en{" "}
+          <a
+            className={"underline hover:text-rose-200"}
+            href={"https://www.facebook.com/EDNederland"}
+            target={"_blank"}
+            rel={"noreferrer"}
+          >
+            Facebook pagina van ED NL
+          </a>
+          . Jouw event op deze agenda?{" "}
           <a
             href={"mailto:info@ecstaticdance.nl"}
             target={"_blank"}
@@ -145,8 +172,8 @@ export default function Agenda({ organisations, events }: AppProps) {
           >
             Neem contact op
           </a>
-          . Andere integraties (zoals Chipta of Facebook) zijn niet nog
-          mogelijk, omdat deze geen API hebben.
+          . Andere integraties (zoals Chipta) zijn nog niet mogelijk, omdat deze
+          geen API hebben.
         </p>
       </section>
       <Footer />
