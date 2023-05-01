@@ -51,7 +51,7 @@ export default function Over({ page }: { page: any }) {
       <Bubbles />
       <header
         className={
-          "text-center sm:pt-8 pt-1 pb-5 mx-5 pointer-events-none grow"
+          "lg:px-10 sm:px-6 px-4 text-center sm:pt-8 pt-1 pb-5 mx-5 pointer-events-none grow"
         }
       >
         <Label>Introductie</Label>

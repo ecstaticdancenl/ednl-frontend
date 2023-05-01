@@ -96,7 +96,7 @@ export default function Index(props: any) {
       <div className={"relative z-10"}>
         <header
           className={
-            "text-center sm:pt-8 pt-1 pb-5 mx-5 pointer-events-none grow"
+            "lg:px-10 sm:px-6 px-4 text-center sm:pt-8 pt-1 pb-5 mx-5 pointer-events-none grow"
           }
         >
           <Label>Dive Deeper</Label>

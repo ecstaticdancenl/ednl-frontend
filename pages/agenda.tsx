@@ -75,7 +75,9 @@ export default function Agenda({ organisations, events }: AppProps) {
       <Navigation />
       <Bubbles />
       <header
-        className={"text-center sm:pt-8 pt-1 pb-5 mx-5 pointer-events-none"}
+        className={
+          "lg:px-10 sm:px-6 px-4 text-center sm:pt-8 pt-1 pb-5 mx-5 pointer-events-none"
+        }
       >
         <Label className={"pointer-events-auto"}>Agenda</Label>
         <h2 className="mt-1 pointer-events-auto">
@@ -84,7 +86,7 @@ export default function Agenda({ organisations, events }: AppProps) {
       </header>
       <section
         className={
-          "lg:px-10 px-6 mt-4 mb-16 mx-auto flex flex-col lg:w-3/4 xl:w-2/3 gap-2 md:gap-4 justify-start items-center grow"
+          "lg:px-10 sm:px-6 px-4 mt-4 mb-16 mx-auto flex flex-col lg:w-3/4 xl:w-2/3 gap-2 md:gap-4 justify-start items-center grow"
         }
       >
         {events.slice(0, page * itemsPerPage).map((event: any) => {

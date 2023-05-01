@@ -8,7 +8,7 @@ export function EventItem(props: any) {
       target={"_blank"}
       rel={"noreferrer"}
       className={
-        "w-full group bg-white/5 shadow rounded-md transition-colors hover:bg-white/10 transition-colors flex gap-3 items-center relative"
+        "w-full group bg-white/5 shadow rounded-md transition-colors hover:bg-white/10 transition-colors flex sm:gap-3 gap-2.5 items-center relative"
       }
     >
       <div
@@ -27,7 +27,7 @@ export function EventItem(props: any) {
         alt={props.title}
       />
       <div className={"flex flex-col p-1 md:p-1"}>
-        <Label className={"md:text-xs text-[11px] leading-[1.2]"}>
+        <Label className={"line-clamp-1 md:text-xs text-[12px] leading-[1.2]"}>
           {props.label}
         </Label>
         <h4 className={"line-clamp-2 leading-[1.2] my-0.5"}>{props.title}</h4>
