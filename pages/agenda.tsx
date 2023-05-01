@@ -59,12 +59,17 @@ type AppProps = {
 function uniqueEvents(events: any) {
   const uniqueTitles: { [key: string]: boolean } = {};
   const uniqueDates: { [key: string]: boolean } = {};
+  const uniqueURL: { [key: string]: boolean } = {};
   return events.filter((event: any) => {
-    if (uniqueTitles[event.title] && uniqueDates[event.start_time]) {
+    if (
+      (uniqueTitles[event.title] && uniqueDates[event.start_time]) ||
+      uniqueURL[event.url_hipsy ? event.url_hipsy : event.ticket_uri]
+    ) {
       return false;
     }
     uniqueTitles[event.title] = true;
     uniqueDates[event.start_time] = true;
+    uniqueURL[event.url_hipsy ? event.url_hipsy : event.ticket_uri] = true;
     return true;
   });
 }
@@ -140,7 +145,7 @@ export default function Agenda({ events }: AppProps) {
               );
             }
           })}
-        {events.length > page * itemsPerPage && (
+        {eventsFiltered.length > page * itemsPerPage && (
           <button
             onClick={() => setPage(page + 1)}
             className={[
@@ -150,7 +155,7 @@ export default function Agenda({ events }: AppProps) {
             Meer laden
           </button>
         )}
-        {events.length === 0 && (
+        {eventsFiltered.length === 0 && (
           <p className={"text-center text-white/60"}>
             Er zijn geen aankomende dansen gevonden
           </p>
