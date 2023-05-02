@@ -107,3 +107,13 @@ main ol{
 .max-w-wrapper > footer, .max-w-wrapper > #navigation{
     @apply max-w-none mx-0;
 }
+
+.ohnohoney{
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 0;
+    width: 0;
+    z-index: -1;
+}

@@ -63,7 +63,8 @@ function uniqueEvents(events: any) {
   return events.filter((event: any) => {
     if (
       (uniqueTitles[event.title] && uniqueDates[event.start_time]) ||
-      uniqueURL[event.url_hipsy ? event.url_hipsy : event.ticket_uri]
+      (uniqueDates[event.start_time] &&
+        uniqueURL[event.url_hipsy ? event.url_hipsy : event.ticket_uri])
     ) {
       return false;
     }
