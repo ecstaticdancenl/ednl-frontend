@@ -13,7 +13,7 @@ export async function getEventsFromHipsy(organisations: any) {
     );
     const data = await res.json();
     const events = data.data.map((event: any) => {
-      event.start_time = event.date.slice(0, -1) + "+02:00";
+      event.start_time = event.date;
       event.type = "Hipsy";
       event.organisation = org.title;
       return event;

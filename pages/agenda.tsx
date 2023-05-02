@@ -13,6 +13,7 @@ import { getEventsFromHipsy } from "@/lib/getEventsFromHipsy";
 import { formatHipsyAddress } from "@/lib/formatHipsyAddress";
 import { EventItem } from "@/components/eventItem";
 import { getEventsFromFacebook } from "@/lib/getEventsFromFacebook";
+import { uniqueEvents } from "@/lib/uniqueEvents";
 
 export async function getStaticProps({ params }: any) {
   //    Get data from WordPress
@@ -55,25 +56,6 @@ type AppProps = {
   className: string;
   events: any;
 };
-
-function uniqueEvents(events: any) {
-  const uniqueTitles: { [key: string]: boolean } = {};
-  const uniqueDates: { [key: string]: boolean } = {};
-  const uniqueURL: { [key: string]: boolean } = {};
-  return events.filter((event: any) => {
-    if (
-      (uniqueTitles[event.title] && uniqueDates[event.start_time]) ||
-      (uniqueDates[event.start_time] &&
-        uniqueURL[event.url_hipsy ? event.url_hipsy : event.ticket_uri])
-    ) {
-      return false;
-    }
-    uniqueTitles[event.title] = true;
-    uniqueDates[event.start_time] = true;
-    uniqueURL[event.url_hipsy ? event.url_hipsy : event.ticket_uri] = true;
-    return true;
-  });
-}
 
 export default function Agenda({ events }: AppProps) {
   const eventsFiltered = uniqueEvents(events);
@@ -184,7 +166,8 @@ export default function Agenda({ events }: AppProps) {
           >
             Facebook pagina van ED NL
           </a>
-          . Jouw event op deze agenda?{" "}
+          .<br />
+          Jouw event op deze agenda?{" "}
           <a
             href={"mailto:info@ecstaticdance.nl"}
             target={"_blank"}
@@ -193,8 +176,7 @@ export default function Agenda({ events }: AppProps) {
           >
             Neem contact op
           </a>
-          . Andere integraties (zoals Chipta) zijn nog niet mogelijk, omdat deze
-          geen API hebben.
+          .
         </p>
       </section>
       <Footer />
