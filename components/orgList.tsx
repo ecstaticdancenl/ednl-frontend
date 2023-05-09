@@ -41,6 +41,7 @@ export function OrgList({ organisations, mapFilter }: OrgListProps) {
               )}
               {org.acfOrganisatieGegevens.locaties?.[0]?.naam &&
                 org.acfOrganisatieGegevens.locaties?.map((loc: any) => {
+                  if (!loc.adres) return null;
                   return (
                     <div
                       className={"text-sm px-2 flex gap-2 items-start"}

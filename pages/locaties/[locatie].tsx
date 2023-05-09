@@ -123,6 +123,7 @@ export default function Locatie({ organisation }: AppProps) {
             )}
             {organisation.acfOrganisatieGegevens.locaties?.[0]?.naam &&
               organisation.acfOrganisatieGegevens.locaties?.map((loc: any) => {
+                if (!loc.adres) return null;
                 return (
                   <a
                     href={`https://www.google.com/maps/search/${loc.adres.replaceAll(
