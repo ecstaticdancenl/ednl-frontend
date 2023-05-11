@@ -10,11 +10,14 @@ export function OrgHeader({ organisation }: { organisation: Organisation }) {
       style={{ height: "50vh", maxHeight: "350px" }}
     >
       {organisation.featuredImage && (
-        <img
-          className={"object-cover w-full h-full absolute rounded-2xl"}
-          src={organisation.featuredImage.node.sourceUrl}
-          alt=""
-        />
+        <div className={"relative w-full h-0"}>
+          <img
+            className={"object-cover w-full absolute rounded-2xl"}
+            style={{ height: "50vh", maxHeight: "350px" }}
+            src={organisation.featuredImage.node.sourceUrl}
+            alt=""
+          />
+        </div>
       )}
       <div
         className={

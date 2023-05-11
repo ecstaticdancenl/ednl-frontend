@@ -158,7 +158,7 @@ export default function Locatie({ organisation }: AppProps) {
                       {loc.over && (
                         <p
                           className={
-                            "text-xs font-light text-white/40 whitespace-pre-wrap self-start"
+                            "text-xs font-light text-white/40 whitespace-pre-wrap self-start text-clip line-clamp-4"
                           }
                         >
                           {loc.over}
