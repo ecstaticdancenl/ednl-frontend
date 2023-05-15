@@ -19,19 +19,21 @@ import { isBrowser, isMobile } from "react-device-detect";
 import { createEmpty, extend } from "ol/extent";
 import { clusterStyleHover } from "@/components/mapStyles";
 
-function zoomToExtent(map) {
-  if (map && map.getView && source.getFeatures().length > 0) {
+function zoomToExtent(map, customExtent, debouncedFilter) {
+  if (
+    customExtent ||
+    (!customExtent && debouncedFilter !== "" && source.getFeatures().length > 0)
+  ) {
     map.getView().fit(source.getExtent(), {
       padding: [100, 100, 100, 100],
       maxZoom: 13,
-      duration: 1000,
+      duration: 600,
     });
   } else {
-    if (map && map.getView)
-      map.getView().fit(new Point(netherlands), {
-        maxZoom: 7.2,
-        duration: 1000,
-      });
+    map.getView().fit(new Point(netherlands), {
+      maxZoom: 7,
+      duration: 600,
+    });
   }
   return null;
 }
@@ -74,12 +76,8 @@ export function MapWrapper({
   }, [organisations]);
 
   useEffect(() => {
-    if (customExtent) zoomToExtent(map);
-  }, [map]);
-
-  useEffect(() => {
-    zoomToExtent(map);
-  }, [debouncedFilter]);
+    if (map && map.getView) zoomToExtent(map, customExtent, debouncedFilter);
+  }, [debouncedFilter, map, customExtent]);
 
   useEffect(() => {
     // create map
@@ -100,8 +98,8 @@ export function MapWrapper({
       view: new View({
         projection: "EPSG:3857",
         center: netherlands,
-        zoom: 7.2,
-        minZoom: 7.2,
+        zoom: 7,
+        minZoom: 7,
         maxZoom: 16,
         extent: [...extentStart, ...extentEnd],
       }),

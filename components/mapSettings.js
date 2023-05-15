@@ -8,7 +8,7 @@ import { pointerMove } from "ol/events/condition";
 
 export const netherlands = fromLonLat([5.2, 52.23], "EPSG:3857");
 export const extentStart = fromLonLat([3, 50.6], "EPSG:3857");
-export const extentEnd = fromLonLat([8, 54], "EPSG:3857");
+export const extentEnd = fromLonLat([8, 54.4], "EPSG:3857");
 // Add locations to map
 export const source = new VectorSource({
   features: [],
