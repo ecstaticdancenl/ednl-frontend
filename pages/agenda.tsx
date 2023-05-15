@@ -30,6 +30,7 @@ export async function getStaticProps({ params }: any) {
             slug
             acfOrganisatieGegevens {
               hipsy {
+                actief
                 slug
                 apiKey
               }

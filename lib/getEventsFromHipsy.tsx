@@ -1,6 +1,18 @@
 export async function getEventsFromHipsy(organisations: any) {
   const promises = organisations.map(async (org: any) => {
-    if (!org?.acfOrganisatieGegevens?.hipsy?.apiKey) return;
+    if (org?.acfOrganisatieGegevens?.hipsy?.apiKey) {
+      console.log(
+        "Get Hipsy events - " +
+          org.title +
+          " - " +
+          (org?.acfOrganisatieGegevens?.hipsy?.actief ? "Actief" : "Inactief")
+      );
+    }
+    if (
+      !org?.acfOrganisatieGegevens?.hipsy?.apiKey ||
+      !org?.acfOrganisatieGegevens?.hipsy?.actief
+    )
+      return;
     const hipsy = org.acfOrganisatieGegevens.hipsy;
     const res = await fetch(
       `https://api.hipsy.nl/v1/organisation/${hipsy.slug}/events?period=upcoming&limit=10`,
