@@ -19,7 +19,7 @@ export function Button({
         size === "sm"
           ? "text-sm px-4 py-1"
           : size === "md"
-          ? "text-base px-8 py-2"
+          ? "sm:text-base text-sm px-4 lg:px-8 py-2"
           : "text-lg",
         className,
       ].join(" ")}
