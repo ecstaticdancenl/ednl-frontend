@@ -34,7 +34,7 @@ export function Locaties(props: {
   useEffect(() => {
     setCountOrgs(
       filteredOrgs.reduce((total: any, org: any) => {
-        return total + org.acfOrganisatieGegevens.locaties.length;
+        return total + org.acfOrganisatieGegevens?.locaties?.length;
       }, 0)
     );
   }, [filteredOrgs]);

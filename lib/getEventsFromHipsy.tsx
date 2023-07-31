@@ -24,8 +24,12 @@ export async function getEventsFromHipsy(organisations: any) {
       }
     );
     const data = await res.json();
-    if (data.message)
-      console.log("\nGot an error from Hipsy API:\n" + data.message);
+    if (data.message) {
+      console.log(
+        `\nGot an error from Hipsy API with ${org.title}:\n${data.message}`
+      );
+      return undefined;
+    }
     if (!data.data) return;
     const events = data.data.map((event: any) => {
       event.start_time = event.date;
