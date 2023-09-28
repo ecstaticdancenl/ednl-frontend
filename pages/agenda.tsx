@@ -42,7 +42,16 @@ export async function getStaticProps({ params }: any) {
   });
 
   const eventsFacebook = await getEventsFromFacebook();
+  if (!eventsFacebook.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error('Failed to fetch data')
+  }
   const eventsHipsy = await getEventsFromHipsy(data.organisations.nodes);
+  if (!eventsHipsy.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error('Failed to fetch data')
+  }
+
   const events = sortEventsByDate([...eventsHipsy.flat(1), ...eventsFacebook]);
 
   return {
