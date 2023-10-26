@@ -84,6 +84,10 @@ export default function Agenda({ events }: AppProps) {
         <h2 className="mt-1 pointer-events-auto">
           Aankomende dansen in Nederland
         </h2>
+         <h2 className="mt-1 pointer-events-auto">
+          Klik hier voor Facebook Events : <a href="https://www.facebook.com/EDNederland/events">Ecstatic Dance Agenda Nederland Events</a>
+        </h2>
+        
       </header>
       <section
         className={
