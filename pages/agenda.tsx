@@ -165,7 +165,7 @@ export default function Agenda({ events }: AppProps) {
           en{" "}
           <a
             className={"underline hover:text-rose-200"}
-            href={"https://www.facebook.com/EDNederland"}
+            href={"https://www.facebook.com/EDNederland/events"}
             target={"_blank"}
             rel={"noreferrer"}
           >
