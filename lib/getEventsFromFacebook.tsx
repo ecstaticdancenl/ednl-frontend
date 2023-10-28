@@ -5,7 +5,6 @@ export async function getEventsFromFacebook() {
  console.log(
         "Getting FB events" + `${process.env.FACEBOOK}`
   );
-  console.log("Result" + result.json());
   const dataFacebook = await result.json();
   const eventsFacebookRaw = dataFacebook.data.map((event: any) => {
     event.type = "Facebook";
