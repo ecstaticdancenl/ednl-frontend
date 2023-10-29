@@ -3,7 +3,7 @@ export async function getEventsFromFacebook() {
     `https://graph.facebook.com/v13.0/EDNederland/events?access_token=${process.env.FACEBOOK}&limit=5&time_filter=upcoming&fields=name,start_time,place,cover.source(width(162),height(126)),ticket_uri`
   );
  console.log(
-        "Getting FB events" +  result
+        "Getting FB events" +  result.json()
   );
   const dataFacebook = await result.json();
   const eventsFacebookRaw = dataFacebook.data.map((event: any) => {
