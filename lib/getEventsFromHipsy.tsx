@@ -37,7 +37,7 @@ export async function getEventsFromHipsy(organisations: any) {
       event.organisation = org.title;
       return event;
     });
-    return events;
+    return events.filter(t => t.title.toLowerCase().includes('ecstatic'));
   });
 
   const results = await Promise.all(promises);
