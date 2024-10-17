@@ -10,7 +10,8 @@ export async function getEventsFromHipsy(organisations: any) {
     }
     if (
       !org?.acfOrganisatieGegevens?.hipsy?.apiKey ||
-      !org?.acfOrganisatieGegevens?.hipsy?.actief
+      !org?.acfOrganisatieGegevens?.hipsy?.actief ||
+      !org?.title
     )
       return;
     const hipsy = org.acfOrganisatieGegevens.hipsy;
