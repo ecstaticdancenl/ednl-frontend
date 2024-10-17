@@ -15,5 +15,5 @@ export async function getEventsFromFacebook() {
     const date = new Date(event.start_time);
     return date >= now;
   });
-  return eventsFacebook;
+  return eventsFacebook.filter((t: any) => !t.place.toLowerCase().includes('bar beton utrecht'));
 }
