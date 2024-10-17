@@ -15,7 +15,7 @@ export async function getEventsFromHipsy(organisations: any) {
       return;
     const hipsy = org.acfOrganisatieGegevens.hipsy;
     const res = await fetch(
-      `https://api.hipsy.nl/v1/organisation/${hipsy.slug}/events?period=upcoming&limit=10`,
+      `https://api.hipsy.nl/v1/organisation/${hipsy.slug}/events?period=upcoming&limit=5`,
       {
         headers: {
           "Content-Type": "application/json",
