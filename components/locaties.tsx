@@ -32,11 +32,13 @@ export function Locaties(props: {
   }, [mapFilter]);
 
   useEffect(() => {
-    setCountOrgs(
-      filteredOrgs.reduce((total: any, org: any) => {
-        return total + org.acfOrganisatieGegevens?.locaties?.length;
-      }, 0)
-    );
+    const newCount = filteredOrgs.reduce((total: any, org: any) => {
+      if (!org.acfOrganisatieGegevens?.locaties) {
+        return total;
+      }
+      return total + Number(org.acfOrganisatieGegevens?.locaties?.length);
+    }, 0);
+    setCountOrgs(newCount);
   }, [filteredOrgs]);
 
   useEffect(() => {
