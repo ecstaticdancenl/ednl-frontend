@@ -24,6 +24,8 @@ jobs:
         uses: actions/checkout@main
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      - name: update browser database
+        run: npx update-browserslist-db@latest
       - name: Build dependencies
         run: yarn build
       - name: Archive production artifact
