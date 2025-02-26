@@ -24,21 +24,48 @@ export async function getEventsFromHipsy(organisations: any) {
         },
       }
     );
-    const data = await res.json();
-    if (data.message) {
+    if (res.status !== 200) {
       console.log(
-        `\nGot an error from Hipsy API with ${org.title}:\n${data.message}`
+        `Status error from Hipsy API with ${org.title}:
+        Status: ${res.status}
+        StatusText: ${res.statusText}`
       );
       return undefined;
     }
-    if (!data.data) return;
-    const events = data.data.map((event: any) => {
-      event.start_time = event.date;
-      event.type = "Hipsy";
-      event.organisation = org.title;
-      return event;
-    });
-    return events.filter((t: any) => t.title.toLowerCase().includes('ecstatic') || t.title.includes('ED'));
+    // Check if the response is a valid json
+    try {
+      const responseText = await res.text(); // First get the raw response
+      try {
+        const data = JSON.parse(responseText); // Then try to parse it as JSON
+        if (data.message) {
+          console.log(
+            `\nData message from Hipsy API with ${org.title}:\n${data.message}`
+          );
+          return undefined;
+        }
+        if (!data.data) return;
+        const events = data.data.map((event: any) => {
+          event.start_time = event.date;
+          event.type = "Hipsy";
+          event.organisation = org.title;
+          return event;
+        });
+        return events.filter(
+          (t: any) =>
+            t.title.toLowerCase().includes("ecstatic") || t.title.includes("ED")
+        );
+      } catch (error) {
+        console.log(
+          `\nJSON parse error from Hipsy API with ${org.title}:\n${error} \n${hipsy.slug}`
+        );
+        return undefined;
+      }
+    } catch (error) {
+      console.log(
+        `\nResponse text error from Hipsy API with ${org.title}:\n${error}`
+      );
+      return undefined;
+    }
   });
 
   const results = await Promise.all(promises);
