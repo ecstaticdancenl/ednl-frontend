@@ -34,8 +34,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.9",
     "@types/react-lottie": "^1.2.10",
-    "autoprefixer": "^10.4.20",
     "postcss": "^8.5.3",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^4.0.9"
   }
 }

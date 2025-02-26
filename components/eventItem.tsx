@@ -8,7 +8,7 @@ export function EventItem(props: any) {
       target={"_blank"}
       rel={"noreferrer"}
       className={
-        "w-full group bg-white/5 shadow rounded-md transition-colors hover:bg-white/10 transition-colors flex sm:gap-3 gap-2.5 items-center relative"
+        "w-full group bg-white/5 shadow-sm rounded-md transition-colors hover:bg-white/10 transition-colors flex sm:gap-3 gap-2.5 items-center relative"
       }
     >
       <div
@@ -21,7 +21,7 @@ export function EventItem(props: any) {
       </div>
       <img
         className={
-          "md:w-28 lg:w-36 w-24 md:h-20 lg:h-28 h-24 rounded object-cover"
+          "md:w-28 lg:w-36 w-24 md:h-20 lg:h-28 h-24 rounded-sm object-cover"
         }
         src={props.img}
         alt={props.title}

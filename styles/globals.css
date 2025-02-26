@@ -1,6 +1,36 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+  --font-*: initial;
+  --font-sans: var(--outfit-font), sans-serif;
+
+  --transition-property-height: height;
+  --transition-property-spacing: margin, padding;
+
+  --text-xxs: 0.625rem;
+
+  --tracking-very-wide: 0.2em;
+
+  --color-blue-gray: #98a7cc;
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 ::selection {
     @apply bg-amber-500 text-slate-100;
@@ -102,7 +132,7 @@ main ol{
 }
 
 .max-w-wrapper > *{
-    @apply max-w-screen-2xl mx-auto;
+    @apply max-w-(--breakpoint-2xl) mx-auto;
 }
 .max-w-wrapper > footer, .max-w-wrapper > #navigation{
     @apply max-w-none mx-0;

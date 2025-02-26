@@ -41,7 +41,7 @@ export function Navigation() {
     >
       <div
         className={[
-          "max-w-screen-2xl mx-auto transition-height duration-500 flex justify-between items-center z-50 lg:px-10 sm:px-6 px-4",
+          "max-w-(--breakpoint-2xl) mx-auto transition-height duration-500 flex justify-between items-center z-50 lg:px-10 sm:px-6 px-4",
           scrolled ? "h-12 py-2" : "md:h-24 h-16 mb-0",
         ].join(" ")}
       >

@@ -35,7 +35,7 @@ export default function Layout({ children }: { children: any }) {
             history.back();
           }}
           className={
-            "bg-gray-900 fixed top-0 z-[99] w-full text-xs py-1 px-2.5 cursor-pointer hover:bg-gray-800 hover:text-blue-300 text-white flex items-center gap-2 group"
+            "bg-gray-900 fixed top-0 z-99 w-full text-xs py-1 px-2.5 cursor-pointer hover:bg-gray-800 hover:text-blue-300 text-white flex items-center gap-2 group"
           }
         >
           <WordpressLogo

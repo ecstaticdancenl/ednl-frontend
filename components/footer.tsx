@@ -14,7 +14,7 @@ export function Footer() {
       <footer className={"bg-slate-900/50 w-full"}>
         <div
           className={
-            "lg:px-10 sm:px-6 px-4 py-12 w-full max-w-screen-2xl mx-auto flex sm:flex-row flex-col items-center justify-between gap-4"
+            "lg:px-10 sm:px-6 px-4 py-12 w-full max-w-(--breakpoint-2xl) mx-auto flex sm:flex-row flex-col items-center justify-between gap-4"
           }
         >
           <img src="/dancer3.svg" className={"w-12 hidden md:block"} alt="" />
@@ -55,7 +55,7 @@ export function Footer() {
                 >
                   <div className={"relative"}>
                     <Field
-                      className="shadow bg-white/10 rounded-md hover:bg-white/20 py-1.5 px-4 placeholder-white/50 transition-colors"
+                      className="shadow-sm bg-white/10 rounded-md hover:bg-white/20 py-1.5 px-4 placeholder-white/50 transition-colors"
                       id="email"
                       name="email"
                       placeholder="Email"
@@ -94,7 +94,7 @@ export function Footer() {
           "z-10 bg-slate-900 py-12 text-white font-light tracking-wider text-xs"
         }
       >
-        <div className={"max-w-screen-2xl mx-auto "}>
+        <div className={"max-w-(--breakpoint-2xl) mx-auto "}>
           <div
             className={
               "lg:px-10 sm:px-6 px-4 md:grid md:grid-cols-3 flex flex-col-reverse gap-12 gap-6"

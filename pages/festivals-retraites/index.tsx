@@ -85,7 +85,7 @@ function FestivalItem({ event }: { event: any }) {
       target={"_blank"}
       rel={"noopener noreferrer"}
       className={
-        "w-full lg:w-[calc(50%-1.25rem)] flex flex-col items-center text-center sm:flex-col gap-4 bg-white/5 hover:bg-white/10 transition-colors shadow rounded-2xl group"
+        "w-full lg:w-[calc(50%-1.25rem)] flex flex-col items-center text-center sm:flex-col gap-4 bg-white/5 hover:bg-white/10 transition-colors shadow-sm rounded-2xl group"
       }
     >
       {event?.featuredImage?.node?.sourceUrl && (
@@ -96,7 +96,7 @@ function FestivalItem({ event }: { event: any }) {
         />
       )}
       <div className={"sm:w-3/4"}>
-        <Label className={"drop-shadow"}>{event.eventInfo.soortEvent}</Label>
+        <Label className={"drop-shadow-sm"}>{event.eventInfo.soortEvent}</Label>
         <h3 className={"text-2xl"}>{event.title}</h3>
         <p className={"text-base text-white/60"}>
           {niceDate(event.eventInfo.wanneer.start)} tot{" "}

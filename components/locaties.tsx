@@ -87,7 +87,7 @@ export function Locaties(props: {
         <div className={"relative"}>
           <input
             className={
-              "shadow bg-white/10 rounded-md hover:bg-white/20 py-1.5 px-4 placeholder-white/50 transition-colors w-72"
+              "shadow-sm bg-white/10 rounded-md hover:bg-white/20 py-1.5 px-4 placeholder-white/50 transition-colors w-72"
             }
             type="text"
             placeholder={"Vind een plek..."}
