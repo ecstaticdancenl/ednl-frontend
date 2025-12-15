@@ -137,7 +137,6 @@ export function MapWrapper({
                 setFilter(
                   feature.get("organisation").replace(/ED/g, "Ecstatic Dance")
                 );
-                zoomToExtent(map);
               });
             }
           }

@@ -2,12 +2,12 @@ import Head from "next/head";
 import { Navigation } from "@/components/navigation";
 import { Bubbles } from "@/components/bubbles";
 import { Footer } from "@/components/footer";
-import { fetchPageByName } from "@/fetch";
+import { fetchPageBySlug } from "@/fetch";
 import { Label } from "@/components/label";
 
-export async function getStaticProps({ params }: any) {
+export async function getStaticProps() {
   //    Get data from WordPress REST API
-  const page = await fetchPageByName("Over");
+  const page = await fetchPageBySlug("over");
 
   if (!page) {
     return {
@@ -45,7 +45,11 @@ export default function Over({ page }: { page: any }) {
         <h2 className="mt-1">{page.title}</h2>
       </header>
       <div>
-        <main className={"px-6 md:px-0 max-w-(--breakpoint-sm) mx-auto md:mb-32 mb-16"}>
+        <main
+          className={
+            "px-6 md:px-0 max-w-(--breakpoint-sm) mx-auto md:mb-32 mb-16"
+          }
+        >
           {page.content && (
             <div dangerouslySetInnerHTML={{ __html: page.content }} />
           )}

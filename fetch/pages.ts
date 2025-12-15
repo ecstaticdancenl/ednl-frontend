@@ -12,7 +12,9 @@ import { WordPressPost, TransformedPage } from "./types";
 /**
  * Fetch a page by slug
  */
-export async function fetchPageBySlug(slug: string): Promise<TransformedPage | null> {
+export async function fetchPageBySlug(
+  slug: string
+): Promise<TransformedPage | null> {
   const posts = await fetchWordPressAPI<WordPressPost>("pages", {
     slug,
     _embed: true,
@@ -30,7 +32,7 @@ export async function fetchPageBySlug(slug: string): Promise<TransformedPage | n
     title: post.title.rendered,
     slug: post.slug,
     content: post.content.rendered,
-    featuredImage: featuredImage || undefined,
+    featuredImage: featuredImage || null,
   };
 }
 
@@ -39,7 +41,9 @@ export async function fetchPageBySlug(slug: string): Promise<TransformedPage | n
  * Note: WordPress REST API doesn't have a direct "name" filter,
  * so we fetch all pages and filter client-side
  */
-export async function fetchPageByName(name: string): Promise<TransformedPage | null> {
+export async function fetchPageByName(
+  name: string
+): Promise<TransformedPage | null> {
   const posts = await fetchWordPressAPI<WordPressPost>("pages", {
     per_page: 100,
     _embed: true,
@@ -61,6 +65,6 @@ export async function fetchPageByName(name: string): Promise<TransformedPage | n
     title: post.title.rendered,
     slug: post.slug,
     content: post.content.rendered,
-    featuredImage: featuredImage || undefined,
+    featuredImage: featuredImage || null,
   };
 }
