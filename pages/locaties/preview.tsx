@@ -1,51 +1,31 @@
-import client from "@/apollo-client";
-import { gql } from "@apollo/client";
-import { getAddressesFromWP } from "@/lib/getAddressesFromAPI";
-import { Organisation } from "@/types/organisation";
-import { Address } from "@/types/address";
+import { fetchOrganisationBySlug, TransformedOrganisation } from "@/fetch";
 import { useEffect, useState } from "react";
-import Lottie from "react-lottie";
 import loading from "@/public/dancing.json";
-import Locatie from "@/pages/locaties/[locatie]";
+import dynamic from "next/dynamic";
 
-async function getDynamicProps(slug: string) {
-  //    Get data from WordPress
-  const { data } = await client.query({
-    query: gql`
-      query{
-        organisation(id: "${slug}", idType: SLUG) {
-          id
-          title
-          content
-          featuredImage {
-            node {
-              sourceUrl
-            }
-          }
-          slug
-          acfOrganisatieGegevens {
-            email
-            website
-            locaties {
-              naam
-              adres
-              over
-              lonlat
-            }
-          }
-        }
-      }
-    `,
-  });
+// `[locatie]` (and its map dependencies) rely on browser-only globals in places,
+// so we must not import it during SSR / static generation.
+const Locatie = dynamic(() => import("./[locatie]"), { ssr: false });
 
-  return {
-    organisation: data.organisation,
-  };
-}
+// `react-lottie` touches `document` at import-time; load it client-side only.
+const Lottie = dynamic(() => import("react-lottie"), { ssr: false });
 
 type AppProps = {
-  organisation: Organisation;
+  organisation: TransformedOrganisation;
 };
+
+async function getDynamicProps(slug: string): Promise<AppProps | null> {
+  //    Get data from WordPress REST API
+  const organisation = await fetchOrganisationBySlug(slug);
+
+  if (!organisation) {
+    return null;
+  }
+
+  return {
+    organisation: organisation,
+  };
+}
 
 const defaultOptions = {
   loop: true,

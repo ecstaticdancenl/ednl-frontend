@@ -3,51 +3,23 @@ import { Navigation } from "@/components/navigation";
 import { Bubbles } from "@/components/bubbles";
 import { Footer } from "@/components/footer";
 import { Label } from "@/components/label";
-import client from "@/apollo-client";
-import { gql } from "@apollo/client";
-import limit from "@/lib/limit";
+import { fetchOrganisations } from "@/fetch";
 import { useState } from "react";
 import { formatDateDutch } from "@/lib/formatDateDutch";
-import { sortEventsByDate } from "@/lib/sortEventsByDate";
 import { getEventsFromHipsy } from "@/lib/getEventsFromHipsy";
 import { formatHipsyAddress } from "@/lib/formatHipsyAddress";
 import { EventItem } from "@/components/eventItem";
-import { getEventsFromFacebook } from "@/lib/getEventsFromFacebook";
 import { uniqueEvents } from "@/lib/uniqueEvents";
 
 export async function getStaticProps({ params }: any) {
-  //    Get data from WordPress
-  const { data } = await client.query({
-    query: gql`
-      query {
-        organisations(
-          first: ${limit}
-          where: { orderby: { field: TITLE, order: ASC } }
-        ) {
-          nodes {
-            id
-            title
-            slug
-            acfOrganisatieGegevens {
-              hipsy {
-                actief
-                slug
-                apiKey
-              }
-            }
-          }
-        }
-      }
-    `,
-  });
+  //    Get data from WordPress REST API
+  const data = await fetchOrganisations();
 
-  const eventsFacebook = await getEventsFromFacebook();
-  const eventsHipsy = await getEventsFromHipsy(data.organisations.nodes);
-  const events = sortEventsByDate([...eventsHipsy.flat(1), ...eventsFacebook]);
+  const events = await getEventsFromHipsy(data.nodes);
 
   return {
     props: {
-      organisations: data.organisations,
+      organisations: data,
       events: events,
     },
   };
@@ -84,10 +56,12 @@ export default function Agenda({ events }: AppProps) {
         <h2 className="mt-1 pointer-events-auto">
           Aankomende dansen in Nederland
         </h2>
-         <h3 className="mt-1 pointer-events-auto">
-          Klik hier voor Facebook Events : <a href="https://www.facebook.com/EDNederland/events">Ecstatic Dance Agenda Nederland Events</a>
+        <h3 className="mt-1 pointer-events-auto">
+          Klik hier voor Facebook Events :{" "}
+          <a href="https://www.facebook.com/EDNederland/events">
+            Ecstatic Dance Agenda Nederland Events
+          </a>
         </h3>
-        
       </header>
       <section
         className={
@@ -96,29 +70,6 @@ export default function Agenda({ events }: AppProps) {
       >
         {eventsFiltered &&
           eventsFiltered.slice(0, page * itemsPerPage).map((event: any) => {
-            if (event.type === "Facebook") {
-              return (
-                <EventItem
-                  key={event.id}
-                  url={
-                    event.ticket_uri
-                      ? event.ticket_uri
-                      : `https://www.facebook.com/events/${event.id}`
-                  }
-                  img={event.cover.source}
-                  label={
-                    event?.place?.name
-                      ? event?.place?.name +
-                        (event?.place?.location?.city
-                          ? ", " + event?.place?.location?.city
-                          : "")
-                      : "facebook event"
-                  }
-                  title={event.name}
-                  date={formatDateDutch(event.start_time, false)}
-                />
-              );
-            }
             if (event.type === "Hipsy") {
               return (
                 <EventItem

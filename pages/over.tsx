@@ -2,35 +2,22 @@ import Head from "next/head";
 import { Navigation } from "@/components/navigation";
 import { Bubbles } from "@/components/bubbles";
 import { Footer } from "@/components/footer";
-import client from "@/apollo-client";
-import { gql } from "@apollo/client";
+import { fetchPageByName } from "@/fetch";
 import { Label } from "@/components/label";
 
 export async function getStaticProps({ params }: any) {
-  //    Get data from WordPress
-  const { data } = await client.query({
-    query: gql`
-      query {
-        pages(where: { name: "Over" }) {
-          nodes {
-            id
-            title
-            content
-            featuredImage {
-              node {
-                sourceUrl
-              }
-            }
-            slug
-          }
-        }
-      }
-    `,
-  });
+  //    Get data from WordPress REST API
+  const page = await fetchPageByName("Over");
+
+  if (!page) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
-      page: data.pages.nodes[0],
+      page: page,
     },
   };
 }

@@ -1,79 +1,42 @@
-import client from "@/apollo-client";
-import { gql } from "@apollo/client";
+import { fetchOrganisationBySlug, fetchOrganisations, TransformedOrganisation } from "@/fetch";
 import { getAddressesFromWP } from "@/lib/getAddressesFromAPI";
 import Head from "next/head";
 import { Navigation } from "@/components/navigation";
 import { Bubbles } from "@/components/bubbles";
 import { Footer } from "@/components/footer";
-import { Organisation } from "@/types/organisation";
 import basepath from "@/lib/basepath";
 import { Label } from "@/components/label";
 import { OrgHeader } from "@/components/orgHeader";
 import { MapWrapper } from "@/components/mapWrapper";
 import { Address } from "@/types/address";
 import ExtURL from "@/components/extURL";
-import limit from "@/lib/limit";
 
 export async function getStaticProps({ params }: any) {
-  //    Get data from WordPress
-  const { data } = await client.query({
-    query: gql`
-      query{
-        organisation(id: "${params.locatie}", idType: SLUG) {
-          id
-          title
-          content
-          featuredImage {
-            node {
-              sourceUrl
-            }
-          }
-          slug
-          acfOrganisatieGegevens {
-            email
-            website
-            locaties {
-              naam
-              adres
-              over
-              lonlat              
-            }
-          }
-        }
-      }
-    `,
-  });
+  //    Get data from WordPress REST API
+  const organisation = await fetchOrganisationBySlug(params.locatie);
 
-  const addresses = getAddressesFromWP([data.organisation]);
+  if (!organisation) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const addresses = getAddressesFromWP([organisation]);
 
   return {
     props: {
       locatie: params.locatie,
-      organisation: data.organisation,
+      organisation: organisation,
       addresses: addresses,
     },
   };
 }
 
 export async function getStaticPaths() {
-  const { data } = await client.query({
-    query: gql`
-      query {
-        organisations(
-          first: ${limit}
-          where: { orderby: { field: TITLE, order: ASC } }
-        ) {
-          nodes {
-            id
-            title
-            slug
-          }
-        }
-      }
-    `,
-  });
+  //    Get all organisation slugs from WordPress REST API
+  const data = await fetchOrganisations();
 
-  const paths = data.organisations.nodes.map((organisation: any) => ({
+  const paths = data.nodes.map((organisation) => ({
     params: { locatie: organisation.slug },
   }));
 
@@ -82,7 +45,7 @@ export async function getStaticPaths() {
 
 type AppProps = {
   className?: string;
-  organisation: Organisation;
+  organisation: TransformedOrganisation;
 };
 
 export default function Locatie({ organisation }: AppProps) {

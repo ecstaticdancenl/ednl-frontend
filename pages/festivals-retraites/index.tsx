@@ -1,6 +1,4 @@
-import client from "@/apollo-client";
-import { gql } from "@apollo/client";
-import limit from "@/lib/limit";
+import { fetchFestivalsRetraites } from "@/fetch";
 import Head from "next/head";
 import { Navigation } from "@/components/navigation";
 import { Bubbles } from "@/components/bubbles";
@@ -11,41 +9,14 @@ import { Button } from "@/components/button";
 import Link from "next/link";
 
 export async function getStaticProps() {
-  //    Get data from WordPress
-  const { data } = await client.query({
-    query: gql`
-      query {
-        festivalsEnRetraites(
-          first: ${limit}
-        ) {      
-            nodes{
-              id
-              title
-              featuredImage{
-                node{
-                    sourceUrl
-                }
-              }
-              eventInfo{
-                soortEvent
-                subtitel
-                locatieNaam
-                adres
-                wanneer{
-                  start
-                  einde
-                }
-                ticketLink
-              }
-            }
-        }
-      }
-    `,
-  });
+  //    Get data from WordPress REST API
+  const data = await fetchFestivalsRetraites();
 
   return {
     props: {
-      data: data,
+      data: {
+        festivalsEnRetraites: data,
+      },
     },
   };
 }

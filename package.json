@@ -6,10 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@apollo/client": "^3.13.1",
     "@types/node": "22.13.5",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
@@ -19,7 +20,6 @@
     "eslint-config-next": "^15.1.7",
     "formik": "^2.4.6",
     "framer-motion": "^12.4.7",
-    "graphql": "^16.10.0",
     "hamburger-react": "^2.5.2",
     "memory-cache": "^0.2.0",
     "next": "^15.1.11",
@@ -34,7 +34,9 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.9",
     "@types/react-lottie": "^1.2.10",
+    "eslint-config-prettier": "^9.1.0",
     "postcss": "^8.5.3",
+    "prettier": "^3.3.3",
     "tailwindcss": "^4.0.9"
   }
 }

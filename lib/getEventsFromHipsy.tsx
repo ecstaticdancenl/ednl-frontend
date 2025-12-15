@@ -69,5 +69,13 @@ export async function getEventsFromHipsy(organisations: any) {
   });
 
   const results = await Promise.all(promises);
-  return results.filter((result) => result !== undefined);
+  const filteredResults = results.filter((result) => result !== undefined);
+  const allEvents = filteredResults.flat();
+
+  // Sort events by date
+  return allEvents.sort((a: any, b: any) => {
+    const dateA = new Date(a.date || a.start_time);
+    const dateB = new Date(b.date || b.start_time);
+    return dateA.getTime() - dateB.getTime();
+  });
 }

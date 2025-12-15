@@ -2,7 +2,7 @@ export interface Address {
   organisation: string;
   naam: string;
   adres: string;
-  lonlat: [];
+  lonlat: string | null;
   hasMultipleLocations: boolean;
   // adresPlain: string;
 }

@@ -1,42 +1,17 @@
-import client from "@/apollo-client";
-import { gql } from "@apollo/client";
+import { fetchOrganisations } from "@/fetch";
 import Head from "next/head";
 import { Navigation } from "@/components/navigation";
 import { Bubbles } from "@/components/bubbles";
 import { Locaties } from "@/components/locaties";
 import { Footer } from "@/components/footer";
-import limit from "@/lib/limit";
 
 export async function getStaticProps() {
-  //    Get data from WordPress
-  const { data } = await client.query({
-    query: gql`
-      query {
-        organisations(
-          first: ${limit}
-          where: { orderby: { field: TITLE, order: ASC } }
-        ) {
-          nodes {
-            id
-            title
-            slug
-            acfOrganisatieGegevens {
-              email
-              locaties {
-                naam
-                adres
-                lonlat                
-              }
-            }
-          }
-        }
-      }
-    `,
-  });
+  //    Get data from WordPress REST API
+  const data = await fetchOrganisations();
 
   return {
     props: {
-      organisations: data.organisations,
+      organisations: data,
     },
   };
 }
