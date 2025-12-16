@@ -32,7 +32,7 @@ export async function fetchPageBySlug(
     title: post.title.rendered,
     slug: post.slug,
     content: post.content.rendered,
-    featuredImage: featuredImage || null,
+    featuredImage: featuredImage ?? null,
   };
 }
 
@@ -65,6 +65,6 @@ export async function fetchPageByName(
     title: post.title.rendered,
     slug: post.slug,
     content: post.content.rendered,
-    featuredImage: featuredImage || null,
+    featuredImage: featuredImage ?? null,
   };
 }

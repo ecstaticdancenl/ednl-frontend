@@ -120,7 +120,9 @@ export interface ACFEventInfo {
 }
 
 // WordPress REST API Response with ACF
-export interface WordPressPostWithACF<T = Record<string, unknown>> extends WordPressPost {
+export interface WordPressPostWithACF<
+  T = Record<string, unknown>,
+> extends WordPressPost {
   acf: T;
 }
 
@@ -165,7 +167,7 @@ export interface TransformedPage {
     node: {
       sourceUrl: string;
     };
-  };
+  } | null;
 }
 
 // Response wrapper types
